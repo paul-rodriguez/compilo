@@ -1,0 +1,57 @@
+letter : [A-Za-z]
+digit : [0-9]
+alphanum : [A-Za-z0-9]
+
+variable : $({letter}|_)(_|{alphanum}){0,250}
+function : ({letter}|_)(_|{alphanum}){0,250}
+integer : {digit}+
+float : {integer}\.{integer}
+string : '[^']*'
+
+space : [\t\n ]
+comment : #
+openpar : \(
+closepar : \)
+openbrack : \{
+closebrack : \}
+semicolon : ;
+call : &
+
+plus : \+
+minus : \-
+mult : \*
+div : \/
+not : !
+notletters : not
+and : &&
+or : ||
+eq : ==
+eqletters : eq
+neq : !=
+neqletters : ne
+lt : <
+ltletters : lt
+gt : >
+gtletters : gt
+le : <=
+gtletters : gt
+ge : >=
+geletters : ge
+comma : ,
+point : "."
+assign : =
+
+
+sub : sub
+if : if
+else : else
+elsif : elsif
+unless : unless
+return : return
+
+defined : defined
+int : int
+length : length
+print : print
+scalar : scalar
+substr : substr
