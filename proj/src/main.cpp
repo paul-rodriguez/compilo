@@ -104,7 +104,7 @@ void functionStart()
 {
 	name = string();
 	isFunction = true;
-	size = 1;
+	size = 0;
 }
 
 void functionEnd()
@@ -617,11 +617,10 @@ void function_print()
 
 void function()
 {
-	do
+	while ((isAlphanum() || character == '_') && size < 252)
 	{
 		nextCharacter();
 	}
-	while ((isAlphanum() || character == '_') && size < 252);
 	if (size < 252)
 	{
 		addToken(Token(FUNCTION, name));
@@ -642,7 +641,6 @@ void start()
 		if (character == '$')
 		{
 			variable();
-			cout << character << endl;
 		}
 		else if (isDigit())
 		{
