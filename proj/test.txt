@@ -15,7 +15,7 @@ FUNCTION trouves
 SPACE
 FUNCTION un
 SPACE
-VARIABLE contreexemple
+FUNCTION contreexemple
 SPACE
 FUNCTION xx1
 POINT

@@ -36,3 +36,6 @@
 *.mtc1
 *.out
 *.synctex.gz
+
+#executable
+*.exe
