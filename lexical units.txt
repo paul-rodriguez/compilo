@@ -34,7 +34,7 @@ ltletters : lt
 gt : >
 gtletters : gt
 le : <=
-gtletters : gt
+leletters : le
 ge : >=
 geletters : ge
 comma : ,

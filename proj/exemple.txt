@@ -1,0 +1,3 @@
+$variable 3function 3.5'bonjour'	#
+(){};&+-*/!not&&||==eq!=ne<lt>gt<=le>=ge,.=
+sub if else elsif unless return defined int length print scalar substr
