@@ -156,6 +156,8 @@ void variable()
 
 void Float()
 {
+	string tmp;
+	tmp = name;
 	nextCharacter();
 	if (isDigit())
 	{
@@ -165,12 +167,13 @@ void Float()
 		}
 		while (isDigit());
 		addToken(Token(FLOAT, name));
-		functionEnd();
 	}
 	else
 	{
-		throw string("Float error : Missing number after point");
+		addToken(Token(INTEGER, tmp));
+		addToken(POINT);
 	}
+	functionEnd();
 }
 
 void integer_float()
