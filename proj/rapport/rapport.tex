@@ -87,7 +87,7 @@
 		    	\hline sub & \verb@ sub @ \\
 		    	\hline if & \verb@ if @ \\
 		    	\hline else & \verb@ else @ \\
-		    	\hline elseif & \verb@ elseif @ \\
+		    	\hline elsif & \verb@ elsif @ \\
 		    	\hline unless & \verb@ unless @ \\
 		    	\hline return & \verb@ return @ \\
 		    	\hline defined & \verb@ defined @ \\
@@ -172,38 +172,41 @@
 				\path[->] (26) edge node{=} (28);
 		\end{tikzpicture}
 		
-	\subsection{Else, elseif et identifier}
+	\subsection{Else, elsif et identifier}
 		\begin{tikzpicture}[node distance=3cm,on grid,auto]
 			\node[initial,initial text=,state] (0) {};
 			\node[state] (1) [right of=0] {};
 				\path[->] (0) edge node{e} (1);
-			\node[state,accepting] (11) [above of=1] {identifier};
-				\path[->] (1) edge node{other} (11);
 			\node[state] (2) [right of=1] {};
 				\path[->] (1) edge node{l} (2);
+			\node[state,accepting] (11) [above of=2] {identifier};
+				\path[->] (1) edge node{other} (11);
 				\path[->] (2) edge node{other} (11);
 			\node[state] (3) [right of=2] {};
 				\path[->] (2) edge node{s} (3);
 				\path[->] (3) edge[above right] node{other} (11);
-			\node[state] (4) [below of=3] {};
+			\node[state] (4) [right of=3] {};
 				\path[->] (3) edge node{e} (4);
-			\node[state,accepting] (5) [right of=4] {else};
+			\node[state,accepting] (5) [below of=4] {else};
 				\path[->] (4) edge node{other} (5);
-			\node[state] (6) [below of=4] {};
-				\path[->] (4) edge node{i} (6);
-			\node[state,accepting] (12) [right of=6] {identifier};
-				\path[->] (6) edge node{other} (12);
+			\node[state] (12) [above of=4] {};
+				\path[->] (4) edge node{[a-zA-Z0-9\_]} (12);
+				\path[->] (12) edge[loop above] node{[a-zA-Z0-9\_]} (12);
+				\path[->] (12) edge node{other} (11);
+			\node[state] (6) [below=6cm of 3] {};
+				\path[->] (3) edge node{i} (6);
+			\node[state,accepting] (13) [right of=6] {identifier};
+				\path[->] (6) edge node{other} (13);
 			\node[state] (7) [below of=6] {};
 				\path[->] (6) edge node{f} (7);
-			\node[state,accepting] (8) [right of=7] {elseif};
+			\node[state,accepting] (8) [right of=7] {elsif};
 				\path[->] (7) edge node{other} (8);
 			\node[state] (9) [below=6cm of 1] {};
 				\path[->] (1) edge[below left] node{[a-km-zA-Z0-9\_]} (9);
 				\path[->] (2) edge[above] node{[a-rt-zA-Z0-9\_]} (9);
-				\path[->] (3) edge[above right] node{[a-df-zA-Z0-9\_]} (9);
-				\path[->] (4) edge node{[a-hj-zA-Z0-9\_]} (9);
+				\path[->] (3) edge[below right] node{[a-df-zA-Z0-9\_]} (9);
 				\path[->] (6) edge[below] node{[a-eg-zA-Z0-9\_]} (9);
-				\path[->] (7) edge[below left] node{[a-zA-Z0-9\_]} (9);
+				\path[->] (7) edge[below] node{[a-zA-Z0-9\_]} (9);
 				\path[->] (9) edge[loop below] node{[a-zA-Z0-9\_]} (9);
 			\node[state,accepting] (10) [left of=9] {identifier};
 				\path[->] (9) edge node{other} (10);
