@@ -1,6 +1,6 @@
 #TeXlipse project settings
-#Fri Feb 15 16:34:07 CET 2013
-markTmpDer=true
+#Sun Feb 17 13:58:08 CET 2013
+markTmpDer=false
 builderNum=2
 outputDir=rapport/
 makeIndSty=
@@ -10,5 +10,5 @@ tempDir=rapport/temp/
 mainTexFile=rapport.tex
 outputFile=rapport.pdf
 langSpell=
-markDer=true
+markDer=false
 srcDir=rapport/
