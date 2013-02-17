@@ -105,7 +105,7 @@
 		compliquée mais concerne des fonctionalités (packages) hors du cadre de ce
 		projet, ce pourquoi nous nous sommes limités aux règles les plus simples.
 	
-\section{Graphe du DFA}
+\section{DFA}
 
 	\subsection{Variables, comparateurs, blocs, litéraux}
 		\begin{tikzpicture}[node distance=3cm,on grid,auto]
@@ -172,8 +172,66 @@
 				\path[->] (26) edge node{=} (28);
 		\end{tikzpicture}
 		
+	\subsection{Else, elseif et identifier}
+		\begin{tikzpicture}[node distance=3cm,on grid,auto]
+			\node[initial,initial text=,state] (0) {};
+			\node[state] (1) [right of=0] {};
+				\path[->] (0) edge node{e} (1);
+			\node[state,accepting] (11) [above of=1] {identifier};
+				\path[->] (1) edge node{other} (11);
+			\node[state] (2) [right of=1] {};
+				\path[->] (1) edge node{l} (2);
+				\path[->] (2) edge node{other} (11);
+			\node[state] (3) [right of=2] {};
+				\path[->] (2) edge node{s} (3);
+				\path[->] (3) edge[above right] node{other} (11);
+			\node[state] (4) [below of=3] {};
+				\path[->] (3) edge node{e} (4);
+			\node[state,accepting] (5) [right of=4] {else};
+				\path[->] (4) edge node{other} (5);
+			\node[state] (6) [below of=4] {};
+				\path[->] (4) edge node{i} (6);
+			\node[state,accepting] (12) [right of=6] {identifier};
+				\path[->] (6) edge node{other} (12);
+			\node[state] (7) [below of=6] {};
+				\path[->] (6) edge node{f} (7);
+			\node[state,accepting] (8) [right of=7] {elseif};
+				\path[->] (7) edge node{other} (8);
+			\node[state] (9) [below=6cm of 1] {};
+				\path[->] (1) edge[below left] node{[a-km-zA-Z0-9\_]} (9);
+				\path[->] (2) edge[above] node{[a-rt-zA-Z0-9\_]} (9);
+				\path[->] (3) edge[above right] node{[a-df-zA-Z0-9\_]} (9);
+				\path[->] (4) edge node{[a-hj-zA-Z0-9\_]} (9);
+				\path[->] (6) edge[below] node{[a-eg-zA-Z0-9\_]} (9);
+				\path[->] (7) edge[below left] node{[a-zA-Z0-9\_]} (9);
+				\path[->] (9) edge[loop below] node{[a-zA-Z0-9\_]} (9);
+			\node[state,accepting] (10) [left of=9] {identifier};
+				\path[->] (9) edge node{other} (10);
+		\end{tikzpicture}
+		Nous avons décidé de ne représenter que ces deux exemples, tous les mots clés fonctionnent sur le même principe.
+		
+	\subsection{Opérateurs et divers}
+		\begin{tikzpicture}[node distance=3cm,on grid,auto]
+			\node[initial,initial text=,state] (0) {};
+			\node[state,accepting] (1) [below of=0] {plus};
+				\path[->] (0) edge node{+} (1);
+			\node[state,accepting] (2) [right of=1] {minus};
+				\path[->] (0) edge node{-} (2);
+			\node[state,accepting] (3) [above of=2] {times};
+				\path[->] (0) edge node{*} (3);
+			\node[state,accepting] (4) [above of=3] {divide};
+				\path[->] (0) edge node{/} (4);
+			\node[state,accepting] (5) [left of=4] {call};
+				\path[->] (0) edge node{\&} (5);
+			\node[state,accepting] (6) [left of=5] {semicolon};
+				\path[->] (0) edge node{;} (6);	
+			\node[state,accepting] (7) [left of=1] {comma};
+				\path[->] (0) edge node{,} (7);	
+			\node[state,accepting] (8) [left of=7] {concat\_mark};
+				\path[->] (0) edge node{.} (8);	
+		\end{tikzpicture}
+		
 	\subsection{Remarques}
-		Le graphe a été scindé pour améliorer la clarté de l'ensemble.
 		Certains tokens sont identifiables dés que leur dernier caractère a été lu (par exemple les accolades), 
 		d'autres nécessitent la lecture du caractère suivant le dernier (par exemple, pour terminer un entier il faut lire autre chose qu'un chiffre).
 		Dans ce deuxième cas, après avoir identifié le token la lecture du dernier caractère est annulée, il servira comme premier caractère du token suivant.
