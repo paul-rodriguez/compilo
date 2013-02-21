@@ -1,0 +1,96 @@
+<EXPRESSION> |= 
+	<NOT_EXPR> 
+
+<NOT_EXPR> |=
+	<ASSIGN_EXPR> |
+	NOTLETTERS <NOT_EXPR>
+	
+<ASSIGN_EXPR> |=
+	<OR_EXPR> <ASSIGN_EXPR_L>
+	
+<ASSIGN_EXPR_L> |=
+	ASSIGN_MARK <OR_EXPR> <ASSIGN_EXPR_L> |
+	eps
+	
+<OR_EXPR> |=
+	<AND_EXPR> <OR_EXPR_L>
+
+<OR_EXPR_L> |=
+	LAZY_OR <AND_EXPR> <OR_EXPR_L> |
+	eps
+	
+<AND_EXPR> |=
+	<EQUATION> <AND_EXPR_L>
+	
+<AND_EXPR_L> |=
+	LAZY_AND <EQUATION> <AND_EXPR_L> |
+	eps
+	
+#equations are non-associative
+<EQUATION> |=
+	<INEQUATION> <EQUATION_L>
+	
+<EQUATION_L> |=
+	<EQUATION_OP> <INEQUATION> |
+	eps
+	
+<EQUATION_OP> |=
+	EQUALS |
+	DIFFERENT |
+	EQ |
+	NE
+	
+#inequations are non-associative
+<INEQUATION> |=
+	<TERM> <INEQUATION_L>
+	
+<INEQUATION_L> |=
+	<INEQUATION_OP> <TERM> |
+	eps
+	
+<INEQUATION_OP> |=
+	GREATER |
+	LOWER |
+	GREATER_EQUALS |
+	LOWER_EQUALS |
+	GT |
+	LT |
+	GE |
+	LE
+	
+<TERM> |=
+	<FACTOR> <TERM_L>
+	
+<TERM_L> |=
+	PLUS <FACTOR> <TERM_L> |
+	MINUS <FACTOR> <TERM_L> |
+	CONCAT_MARK <FACTOR> <TERM_L> |
+	eps
+	
+<FACTOR> |=
+	<UNARY_EXPR> <FACTOR_L>
+	
+<FACTOR_L> |=
+	TIMES <UNARY_EXPR> <FACTOR_L> |
+	DIVIDE <UNARY_EXPR> <FACTOR_L> |
+	eps
+	
+<UNARY_EXPR> |=
+	<PAR_EXPR> |
+	<UNARY_OP> <UNARY_EXPR>
+	
+<UNARY_OP> |=
+	NOT |
+	PLUS |
+	MINUS
+	
+<PAR_EXPR> |=
+	LPAR <EXPRESSION> RPAR |
+	<SIMPLE_EXPRESSION>
+	
+<SIMPLE_EXPRESSION> |=
+	<FUNCTION_CALL> |
+	VAR |
+	INTEGER |
+	FLOAT |
+	STRING
