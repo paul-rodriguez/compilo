@@ -1,9 +1,23 @@
-\documentclass[a4paper,12pt]{article}
+\documentclass[a4paper,10pt]{article}
 \usepackage[utf8]{inputenc}
+\usepackage[francais]{babel}
 \usepackage{tikz}
 \usetikzlibrary{automata,positioning}
 \usepackage{amssymb}
 \usepackage{hyperref}
+\usepackage{vmargin}
+\usepackage{pbox}
+
+\setmarginsrb%
+ {2cm} %{leftmargin}
+ {2.5cm} %{topmargin}
+ {2.5cm} %{rightmarg}
+ {2.5cm} %{bottommargin}
+ {0cm}   %{headheight}
+ {0cm}   %{headsep}
+ {1.5cm} %{footheight}
+ {1.5cm} %{footsep}
+
 \hypersetup{
 	unicode=true,         	% non-Latin characters in Acrobat�s bookmarks
 	pdftoolbar=true,        % show Acrobat�s toolbar?
@@ -19,24 +33,16 @@
     filecolor=magenta,      % color of file links
     urlcolor=cyan           % color of external links
 }
+
+\title{Project INFO F 403 : Compilateur Perl}
+\author{RODRIGUEZ Paul, VACCARI Eric}
+
 \begin{document}
-	\begin{center}
-		\begin{huge}\textbf{INFO-F-403}\end{huge}\\ 
-		\bigskip \bigskip
-		\begin{Huge}\textbf{Projet : Compilateur Perl}\end{Huge}\\
-		
-		\vspace*{9cm}
-		\begin{Large}
-		\textbf{Auteurs :}
-		\vspace{0,1cm}
-		\vspace{0,5cm}
-			\bigskip \bigskip \bigskip 
-			\begin{tabular}{l@{\hspace*{1,2cm}} l@{\vspace*{0,3cm}}}			
-				Rodriguez Paul\\
-				Vaccari Eric\\
-			\end{tabular} 
-		\end{Large}
-	\end{center}
+
+\maketitle
+\pagebreak
+\tableofcontents
+\pagebreak
 
 \section{Unités lexicales}
 	\subsection{Tableau}
@@ -106,7 +112,6 @@
 		projet, ce pourquoi nous nous sommes limités aux règles les plus simples.
 	
 \section{DFA}
-
 	\subsection{Variables, comparateurs, blocs, litéraux}
 		\begin{tikzpicture}[node distance=3cm,on grid,auto]
 			\node[initial,initial text=,state] (0) {};
@@ -239,5 +244,31 @@
 		d'autres nécessitent la lecture du caractère suivant le dernier (par exemple, pour terminer un entier il faut lire autre chose qu'un chiffre).
 		Dans ce deuxième cas, après avoir identifié le token la lecture du dernier caractère est annulée, il servira comme premier caractère du token suivant.
 
+\section{Grammaire LL(1)}
 
+\newcommand{\varname}[1]{\begin{math}\langle\end{math}#1\begin{math}\rangle\end{math}}
+\newcommand{\num}[1]{\begin{math}[#1]\end{math}}
+
+\begin{center}
+\begin{tabular}{r l l}
+	\num{1} & \varname{PROGRAM} & $\longrightarrow$ \varname{PROGRAM\_F} \varname{PROGRAM\_V} \\
+	\num{2} & \varname{PROGRAM\_F} & $\longrightarrow$ \varname{PROGRAM\_F} \varname{PROGRAM\_V} \\
+	\num{3} & & $\longrightarrow$ $\epsilon$ \\
+	\num{4} & \varname{PROGRAM\_V} & $\longrightarrow$ \varname{FUNCTION} \\
+	\num{5} & & $\longrightarrow$ \varname{INSTRUCTION} \\
+	\num{6} & \varname{FUNCTION} & $\longrightarrow$ SUB IDENTIFIER \varname{FUNCTION\_ARGUMENT} \\ & & LBRACE \varname{INSTRUCTION\_LIST} RBRACE \\
+	\num{7} & \varname{FUNCTION\_ARGUMENT} & $\longrightarrow$ LPAR \varname{ARGUMENT\_LIST} RPAR \\
+	\num{8} & & $\longrightarrow$ $\epsilon$ \\
+	\num{9} & \varname{ARGUMENT\_LIST} & $\longrightarrow$ VAR \varname{ARGUMENT\_LIST\_V} \\
+	\num{10} & & $\longrightarrow$ $\epsilon$ \\
+	\num{11} & \varname{ARGUMENT\_LIST\_V} & $\longrightarrow$ COMMA VAR \varname{ARGUMENT\_LIST\_V} \\
+	\num{12} & & $\longrightarrow$ $\epsilon$ \\
+	\num{13} & \varname{INSTRUCTION\_LIST} & $\longrightarrow$ \varname{INSTRUCTION} \varname{INSTRUCTION\_LIST} \\
+	\num{14} & & $\longrightarrow$ $\epsilon$ \\
+	\num{15} & \varname{INSTRUCTION} & $\longrightarrow$ \varname{EXPRESSION} \varname{INSTRUCTION\_F} SEMICOLON \\
+	\num{16} & & $\longrightarrow$ RETURN \varname{EXPRESSION} \varname{INSTRUCTION\_F} SEMICOLON \\
+	\num{17} & & $\longrightarrow$ LBRACE \varname{INSTRUCTION\_LIST} RBRACE \\
+	\num{18} & & $\longrightarrow$ \varname{CONDITION} \varname{EXPRESSION} LBRACE \varname{INSTRUCTION\_LIST} \\ & & RBRACE \varname{CONDITION\_END}\\
+\end{tabular}
+\end{center}
 \end{document}
