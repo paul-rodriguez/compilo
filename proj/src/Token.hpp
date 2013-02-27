@@ -1,13 +1,15 @@
 #ifndef TOKEN_HPP
 #define TOKEN_HPP
 
+#include <ostream>
 #include <string>
 using namespace std;
 
 class Token
 {
 	public:
-		enum TokenID {
+		enum TokenID
+		{
 			END,
 			VAR,
 			IDENTIFIER,
@@ -63,6 +65,7 @@ class Token
 		~Token();
 		void setId(TokenID);
 		void setValue(string);
+		bool isLast() const;
 		TokenID id() const;
 		string value() const;
 
@@ -71,6 +74,8 @@ class Token
 		string value_;
 };
 
+
+ostream& operator<<(ostream&, const Token&);
 
 
 #endif /* TOKEN_HPP */
