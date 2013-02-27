@@ -7,6 +7,8 @@
 \usepackage{hyperref}
 \usepackage{vmargin}
 \usepackage{pbox}
+\usepackage{ltxtable, tabularx, longtable}
+\usepackage{lscape}
 
 \setmarginsrb%
  {2cm} %{leftmargin}
@@ -215,7 +217,7 @@
 				\path[->] (9) edge[loop below] node{[a-zA-Z0-9\_]} (9);
 			\node[state,accepting] (10) [left of=9] {identifier};
 				\path[->] (9) edge node{other} (10);
-		\end{tikzpicture}
+		\end{tikzpicture} \\
 		Nous avons décidé de ne représenter que ces deux exemples, tous les mots clés fonctionnent sur le même principe.
 		
 	\subsection{Opérateurs et divers}
@@ -240,7 +242,7 @@
 		\end{tikzpicture}
 		
 	\subsection{Remarques}
-		Certains tokens sont identifiables dés que leur dernier caractère a été lu (par exemple les accolades), 
+		Certains tokens sont identifiables dès que leur dernier caractère a été lu (par exemple les accolades), 
 		d'autres nécessitent la lecture du caractère suivant le dernier (par exemple, pour terminer un entier il faut lire autre chose qu'un chiffre).
 		Dans ce deuxième cas, après avoir identifié le token la lecture du dernier caractère est annulée, il servira comme premier caractère du token suivant.
 
@@ -249,26 +251,99 @@
 \newcommand{\varname}[1]{\begin{math}\langle\end{math}#1\begin{math}\rangle\end{math}}
 \newcommand{\num}[1]{\begin{math}[#1]\end{math}}
 
-\begin{center}
-\begin{tabular}{r l l}
-	\num{1} & \varname{PROGRAM} & $\longrightarrow$ \varname{PROGRAM\_F} \varname{PROGRAM\_V} \\
-	\num{2} & \varname{PROGRAM\_F} & $\longrightarrow$ \varname{PROGRAM\_F} \varname{PROGRAM\_V} \\
-	\num{3} & & $\longrightarrow$ $\epsilon$ \\
-	\num{4} & \varname{PROGRAM\_V} & $\longrightarrow$ \varname{FUNCTION} \\
-	\num{5} & & $\longrightarrow$ \varname{INSTRUCTION} \\
-	\num{6} & \varname{FUNCTION} & $\longrightarrow$ SUB IDENTIFIER \varname{FUNCTION\_ARGUMENT} \\ & & LBRACE \varname{INSTRUCTION\_LIST} RBRACE \\
+\begin{longtable}{r l l}
+	\centering
+	\num{1} & \varname{PROGRAM} & $\longrightarrow$ \varname{PROGRAM\_F} \varname{PROGRAM\_V} \\ [+10pt]
+	\num{2} & \varname{PROGRAM\_V} & $\longrightarrow$ \varname{PROGRAM\_F} \varname{PROGRAM\_V} \\
+	\num{3} & & $\longrightarrow$ $\epsilon$ \\ [+10pt]
+	\num{4} & \varname{PROGRAM\_F} & $\longrightarrow$ \varname{FUNCTION} \\
+	\num{5} & & $\longrightarrow$ \varname{INSTRUCTION} \\ [+10pt]
+	\num{6} & \varname{FUNCTION} & $\longrightarrow$ SUB IDENTIFIER \varname{FUNCTION\_ARGUMENT} \\ & & LBRACE \varname{INSTRUCTION\_LIST} RBRACE \\ [+10pt]
 	\num{7} & \varname{FUNCTION\_ARGUMENT} & $\longrightarrow$ LPAR \varname{ARGUMENT\_LIST} RPAR \\
-	\num{8} & & $\longrightarrow$ $\epsilon$ \\
+	\num{8} & & $\longrightarrow$ $\epsilon$ \\ [+10pt]
 	\num{9} & \varname{ARGUMENT\_LIST} & $\longrightarrow$ VAR \varname{ARGUMENT\_LIST\_V} \\
-	\num{10} & & $\longrightarrow$ $\epsilon$ \\
+	\num{10} & & $\longrightarrow$ $\epsilon$ \\ [+10pt]
 	\num{11} & \varname{ARGUMENT\_LIST\_V} & $\longrightarrow$ COMMA VAR \varname{ARGUMENT\_LIST\_V} \\
-	\num{12} & & $\longrightarrow$ $\epsilon$ \\
+	\num{12} & & $\longrightarrow$ $\epsilon$ \\ [+10pt]
 	\num{13} & \varname{INSTRUCTION\_LIST} & $\longrightarrow$ \varname{INSTRUCTION} \varname{INSTRUCTION\_LIST} \\
-	\num{14} & & $\longrightarrow$ $\epsilon$ \\
+	\num{14} & & $\longrightarrow$ $\epsilon$ \\ [+10pt]
 	\num{15} & \varname{INSTRUCTION} & $\longrightarrow$ \varname{EXPRESSION} \varname{INSTRUCTION\_F} SEMICOLON \\
 	\num{16} & & $\longrightarrow$ RETURN \varname{EXPRESSION} \varname{INSTRUCTION\_F} SEMICOLON \\
 	\num{17} & & $\longrightarrow$ LBRACE \varname{INSTRUCTION\_LIST} RBRACE \\
-	\num{18} & & $\longrightarrow$ \varname{CONDITION} \varname{EXPRESSION} LBRACE \varname{INSTRUCTION\_LIST} \\ & & RBRACE \varname{CONDITION\_END}\\
-\end{tabular}
-\end{center}
+	\num{18} & & $\longrightarrow$ \varname{CONDITION} \varname{EXPRESSION} LBRACE \varname{INSTRUCTION\_LIST} \\ & & RBRACE \varname{CONDITION\_END} \\ [+10pt]
+	\num{19} & \varname{INSTRUCTION\_F} & $\longrightarrow$ \varname{CONDITION} \varname{EXPRESSION} \\
+	\num{20} & & $\longrightarrow$ $\epsilon$ \\ [+10pt]
+	\num{21} & \varname{CONDITION} & $\longrightarrow$ IF \\
+	\num{22} & & $\longrightarrow$ UNLESS \\ [+10pt]
+	\num{23} & \varname{CONDITION\_END} & $\longrightarrow$ ELSIF \varname{EXPRESSION} LBRACE \varname{INSTRUCTION\_LIST} \\ & & RBRACE \varname{CONDITION\_END} \\
+	\num{24} & & $\longrightarrow$ ELSE \varname{EXPRESSION} LBRACE \varname{INSTRUCTION\_LIST} RBRACE \\
+	\num{25} & & $\longrightarrow$ $\epsilon$ \\ [+10pt]
+	\num{26} & \varname{EXPRESSION} & $\longrightarrow$ NOTLETTERS \varname{EXPRESSION} \\
+	\num{27} & & $\longrightarrow$ \varname{EXPRESSION\_TWO} \\ [+10pt]
+	\num{28} & \varname{EXPRESSION\_TWO} & $\longrightarrow$ \varname{EXPRESSION\_THREE} \varname{EXPRESSION\_TWO\_V} \\ [+10pt]
+	\num{29} & \varname{EXPRESSION\_TWO\_V} & $\longrightarrow$ ASSIGN\_MARK \varname{EXPRESSION\_THREE} \varname{EXPRESSION\_TWO\_V} \\
+	\num{30} & & $\longrightarrow$ $\epsilon$ \\ [+10pt]
+	\num{31} & \varname{EXPRESSION\_THREE} & $\longrightarrow$ \varname{EXPRESSION\_FOUR} \varname{EXPRESSION\_THREE\_V} \\ [+10pt]
+	\num{32} & \varname{EXPRESSION\_THREE\_V} & $\longrightarrow$ LAZY\_OR \varname{EXPRESSION\_FOUR} \varname{EXPRESSION\_THREE\_V} \\
+	\num{33} & & $\longrightarrow$ $\epsilon$ \\ [+10pt]
+	\num{34} & \varname{EXPRESSION\_FOUR} & $\longrightarrow$ \varname{EXPRESSION\_FIVE} \varname{EXPRESSION\_FOUR\_V} \\ [+10pt]
+	\num{35} & \varname{EXPRESSION\_FOUR\_V} & $\longrightarrow$ LAZY\_AND \varname{EXPRESSION\_FIVE} \varname{EXPRESSION\_FOUR\_V} \\
+	\num{36} & & $\longrightarrow$ $\epsilon$ \\ [+10pt]
+	\num{37} & \varname{EXPRESSION\_FIVE} & $\longrightarrow$ \varname{EXPRESSION\_SIX} \varname{EXPRESSION\_FIVE\_V} \\ [+10pt]
+	\num{38} & \varname{EXPRESSION\_FIVE\_V} & $\longrightarrow$ \varname{EXPRESSION\_FIVE\_F} \varname{EXPRESSION\_SIX} \\
+	\num{39} & & $\longrightarrow$ $\epsilon$ \\ [+10pt]
+	\num{40} & \varname{EXPRESSION\_FIVE\_F} & $\longrightarrow$ DIFFERENT \\
+	\num{41} & & $\longrightarrow$ EQ \\
+	\num{42} & & $\longrightarrow$ EQUALS \\
+	\num{43} & & $\longrightarrow$ NE \\ [+10pt]
+	\num{44} & \varname{EXPRESSION\_SIX} & $\longrightarrow$ \varname{EXPRESSION\_SEVEN} \varname{EXPRESSION\_SIX\_V} \\ [+10pt]
+	\num{45} & \varname{EXPRESSION\_SIX\_V} & $\longrightarrow$ \varname{EXPRESSION\_SIX\_F} \varname{EXPRESSION\_SEVEN} \\
+	\num{46} & & $\longrightarrow$ $\epsilon$ \\ [+10pt]
+	\num{47} & \varname{EXPRESSION\_SIX\_F} & $\longrightarrow$ GE \\
+	\num{48} & & $\longrightarrow$ GREATER \\
+	\num{49} & & $\longrightarrow$ GREATER\_EQUALS \\
+	\num{50} & & $\longrightarrow$ GT \\
+	\num{51} & & $\longrightarrow$ LE \\
+	\num{52} & & $\longrightarrow$ LOWER \\
+	\num{53} & & $\longrightarrow$ LOWER\_EQUALS \\
+	\num{54} & & $\longrightarrow$ LT \\ [+10pt]
+	\num{55} & \varname{EXPRESSION\_SEVEN} & $\longrightarrow$ \varname{EXPRESSION\_EIGHT} \varname{EXPRESSION\_SEVEN\_V} \\ [+10pt]
+	\num{56} & \varname{EXPRESSION\_SEVEN\_V} & $\longrightarrow$ \varname{EXPRESSION\_SEVEN\_F} \varname{EXPRESSION\_EIGHT} \\ & & \varname{EXPRESSION\_SEVEN\_V} \\
+	\num{57} & & $\longrightarrow$ $\epsilon$ \\ [+10pt]
+	\num{58} & \varname{EXPRESSION\_SEVEN\_F} & $\longrightarrow$ PLUS \\
+	\num{59} & & $\longrightarrow$ MINUS \\
+	\num{60} & & $\longrightarrow$ CONCAT\_MARK \\ [+10pt]
+	\num{61} & \varname{EXPRESSION\_EIGHT} & $\longrightarrow$ \varname{EXPRESSION\_NINE} \varname{EXPRESSION\_EIGHT\_V} \\ [+10pt]
+	\num{62} & \varname{EXPRESSION\_EIGHT\_V} & $\longrightarrow$ \varname{EXPRESSION\_EIGHT\_F} \varname{EXPRESSION\_NINE} \\ & & \varname{EXPRESSION\_EIGHT\_V} \\
+	\num{63} & & $\longrightarrow$ $\epsilon$ \\ [+10pt]
+	\num{64} & \varname{EXPRESSION\_EIGHT\_F} & $\longrightarrow$ TIMES \\
+	\num{65} & & $\longrightarrow$ DIVIDE \\ [+10pt]
+	\num{66} & \varname{EXPRESSION\_NINE} & $\longrightarrow$ \varname{EXPRESSION\_NINE\_V} \varname{EXPRESSION\_TEN} \\ [+10pt]
+	\num{67} & \varname{EXPRESSION\_NINE\_V} & $\longrightarrow$ \varname{EXPRESSION\_NINE\_F} \varname{EXPRESSION\_NINE\_V} \\
+	\num{68} & & $\longrightarrow$ $\epsilon$ \\ [+10pt]
+	\num{69} & \varname{EXPRESSION\_NINE\_F} & $\longrightarrow$ NOT  \\
+	\num{70} & & $\longrightarrow$ PLUS \\
+	\num{71} & & $\longrightarrow$ MINUS \\ [+10pt]
+	\num{72} & \varname{EXPRESSION\_TEN} & $\longrightarrow$ LPAR \varname{EXPRESSION} RPAR \\
+	\num{73} & & $\longrightarrow$ \varname{SIMPLE\_EXPRESSION} \\ [+10pt]
+	\num{74} & \varname{SIMPLE\_EXPRESSION} & $\longrightarrow$ \varname{FUNCTION\_CALL} \\
+	\num{75} & & $\longrightarrow$ INTEGER \\
+	\num{76} & & $\longrightarrow$ FLOAT \\
+	\num{77} & & $\longrightarrow$ STRING \\
+	\num{78} & & $\longrightarrow$ VAR \\ [+10pt]
+	\num{79} & \varname{FUNCTION\_CALL} & $\longrightarrow$ CALL\_MARK IDENTIFIER LPAR \varname{ARGUMENT\_CALL\_LIST} \\ & & RPAR \\ [+10pt]
+	\num{80} & \varname{ARGUMENT\_CALL\_LIST} & $\longrightarrow$ \varname{EXPRESSION} \varname{ARGUMENT\_CALL\_LIST\_V} \\
+	\num{81} & & $\longrightarrow$ $\epsilon$ \\ [+10pt]
+	\num{82} & \varname{ARGUMENT\_CALL\_LIST\_V} & $\longrightarrow$ COMMA \varname{EXPRESSION} \varname{ARGUMENT\_CALL\_LIST\_V} \\
+	\num{83} & & $\longrightarrow$ $\epsilon$ \\
+\end{longtable}
+
+%\begin{landscape}
+%\begin{longtable}{c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c}
+%	\centering
+%	& var & identifier & integer & float & string & lbrace & rbrace & lpar & rpar & semicolon & call\_mark & plus & minus & %times & divide & not & notletters & lazy\_and  \\ \hline
+%	\verb@<@PROGRAM\verb@>@ & & & & &
+%\end{longtable}
+%\end{landscape}
+
 \end{document}
