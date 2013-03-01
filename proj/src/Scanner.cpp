@@ -1,4 +1,5 @@
 #include "Scanner.hpp"
+#include <stdexcept>
 
 Scanner::Scanner(char* fileName)
 	: file(),
@@ -196,7 +197,7 @@ const Token& Scanner::nextToken()
 	}
 	else
 	{
-		throw string("Invalid file name");
+		throw runtime_error("Invalid file name");
 	}
 	return token;
 }
@@ -273,12 +274,12 @@ void Scanner::var()
 		}
 		else
 		{
-			throw string("Variable error : name too long\nName = " + name);
+			throw runtime_error("Variable error : name too long\nName = " + name);
 		}
 	}
 	else
 	{
-		throw string("Variable error : invalid name");
+		throw runtime_error("Variable error : invalid name");
 	}
 }
 
@@ -296,7 +297,7 @@ void Scanner::identifier()
 	}
 	else
 	{
-		throw string("Function error : name too long");
+		throw runtime_error("Function error : name too long");
 	}
 }
 
@@ -342,9 +343,13 @@ void Scanner::String()
 {
 	nextCharacter();
 	identifierStart();
-	while (character != '\'')
+	while (character != '\'' && !file.eof())
 	{
 		nextCharacter();
+	}
+	if (file.eof())
+	{
+		throw runtime_error("String error : incomplete string");
 	}
 	token.setId(Token::STRING);
 	token.setValue(name);
@@ -368,7 +373,7 @@ void Scanner::comment()
 	{
 		nextCharacter();
 	}
-	while (character != '\n');
+	while (character != '\n' && !file.eof());
 	token.setId(Token::COMMENT);
 }
 
@@ -432,7 +437,7 @@ void Scanner::lazyOr()
 	}
 	else
 	{
-		throw string("Or error : Pipe character missing");
+		throw runtime_error("Or error : Pipe character missing");
 	}
 }
 
