@@ -1,6 +1,9 @@
 #include "Token.hpp"
 
-Token::Token(TokenID id, string str) : id_(id), value_(str)
+Token::Token(TokenID id, string str) :
+	RuleElement(),
+	id_(id),
+	value_(str)
 {
 	;
 }
@@ -30,7 +33,7 @@ Token::TokenID Token::id() const
 	return id_;
 }
 
-string Token::value() const
+const string& Token::value() const
 {
 	return value_;
 }

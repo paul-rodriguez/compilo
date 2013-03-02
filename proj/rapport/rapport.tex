@@ -344,4 +344,12 @@
 %\end{longtable}
 %\end{landscape}
 
+remarques : 
+1) on a enlevé la possibilité d'omettre les () autour des listes d'arguments a
+l'appel d'une fonction, c'est pas LL(1) car le follow de expression prend le
+follow de toutes les expressions
+
+2) On a supprimé le ``not'', car sa priorité faible engendre un comportement
+non-LL(1), le follow de expression prend le follow de toutes les expressions
+
 \end{document}

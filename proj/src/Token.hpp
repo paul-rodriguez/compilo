@@ -5,7 +5,9 @@
 #include <string>
 using namespace std;
 
-class Token
+#include "RuleElement.hpp"
+
+class Token: public RuleElement
 {
 	public:
 		enum TokenID
@@ -67,7 +69,7 @@ class Token
 		void setValue(string);
 		bool isLast() const;
 		TokenID id() const;
-		string value() const;
+		const string& value() const;
 
 	private:
 		TokenID id_;
