@@ -1,9 +1,15 @@
 #include "Token.hpp"
 
 Token::Token(TokenID id, string str) :
-	RuleElement(),
 	id_(id),
 	value_(str)
+{
+	;
+}
+
+Token::Token(const Token& t):
+	id_(t.id_),
+	value_(t.value_)
 {
 	;
 }
@@ -196,9 +202,9 @@ ostream& operator<<(ostream& out, const Token& t)
 	{
 		out << "ELSE";
 	}
-	else if (t.id() == Token::ELSEIF)
+	else if (t.id() == Token::ELSIF)
 	{
-		out << "ELSEIF";
+		out << "ELSEF";
 	}
 	else if (t.id() == Token::UNLESS)
 	{

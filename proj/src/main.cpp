@@ -1,6 +1,7 @@
 #include <iostream>
 #include <stdexcept>
 #include "Scanner.hpp"
+#include "Parser.hpp"
 #include "Token.hpp"
 using namespace std;
 
@@ -11,12 +12,14 @@ int main(int argc, char** argv)
 		Scanner sc (argv[1]);
 		try
 		{
-			Token t = sc.nextToken();
-			while (!t.isLast())
-			{
-				cout << t << "\n";
-				t = sc.nextToken();
-			}
+			Parser parser(sc);
+			parser.run();
+//			Token t = sc.nextToken();
+//			while (!t.isLast())
+//			{
+//				cout << t << "\n";
+//				t = sc.nextToken();
+//			}
 		}
 		catch (runtime_error& error)
 		{
@@ -27,6 +30,7 @@ int main(int argc, char** argv)
 	{
 		cout << "No file specified for compilation" << endl;
 	}
+	cerr.flush();
 	return 0;
 }
  

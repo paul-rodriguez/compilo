@@ -490,7 +490,7 @@ void Scanner::elseif_identifier()
 	nextCharacter();
 	if (character == 'f')
 	{
-		commonTokenEnd(Token::ELSEIF);
+		commonTokenEnd(Token::ELSIF);
 	}
 }
 

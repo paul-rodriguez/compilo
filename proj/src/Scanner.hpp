@@ -12,6 +12,10 @@ class Scanner
 	public:
 		Scanner(char*);
 		~Scanner();
+
+		/*
+		 * The token has to be copied (this function changes the same token object)
+		 */
 		const Token& nextToken();
 
 	protected:

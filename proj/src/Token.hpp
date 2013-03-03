@@ -5,9 +5,8 @@
 #include <string>
 using namespace std;
 
-#include "RuleElement.hpp"
 
-class Token: public RuleElement
+class Token
 {
 	public:
 		enum TokenID
@@ -52,7 +51,7 @@ class Token: public RuleElement
 			SUB,
 			IF,
 			ELSE,
-			ELSEIF,
+			ELSIF,
 			UNLESS,
 			RETURN,
 			DEFINED,
@@ -64,6 +63,7 @@ class Token: public RuleElement
 		};
 
 		Token(TokenID = END, string = string());
+		Token(const Token&);
 		~Token();
 		void setId(TokenID);
 		void setValue(string);
