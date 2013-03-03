@@ -31,14 +31,30 @@ protected:
 	void program_v();
 	void instruction();
 	void instruction_list();
+	void instruction_f();
 	void function();
 	void function_argument();
 	void argument_list();
 	void argument_list_v();
-	void expression();
-	void instruction_f();
 	void condition();
 	void condition_end();
+	void expression();
+	void expression_v();
+	void expression_two();
+	void expression_two_v();
+	void expression_three();
+	void expression_three_v();
+	void expression_four();
+	void expression_four_v();
+	void expression_five();
+	void expression_five_v();
+	void expression_six();
+	void expression_six_v();
+	void expression_seven();
+	void expression_seven_v();
+	void expression_eight();
+	void expression_eight_v();
+	void expression_nine();
 
 	void end();
 

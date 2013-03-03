@@ -276,28 +276,26 @@
 	\num & \varname{CONDITION\_END} & $\longrightarrow$ ELSIF \varname{EXPRESSION} LBRACE \varname{INSTRUCTION\_LIST} \\ & & RBRACE \varname{CONDITION\_END} \\
 	\num & & $\longrightarrow$ ELSE LBRACE \varname{INSTRUCTION\_LIST} RBRACE \\
 	\num & & $\longrightarrow$ $\epsilon$ \\ [+10pt]
-	\num & \varname{EXPRESSION} & $\longrightarrow$ NOTLETTERS \varname{EXPRESSION} \\
-	\num & & $\longrightarrow$ \varname{EXPRESSION\_TWO} \\ [+10pt]
+	\num & \varname{EXPRESSION} & $\longrightarrow$ \varname{EXPRESSION\_TWO} \varname{EXPRESSION\_V} \\ [+10pt]
+	\num & \varname{EXPRESSION\_V} & $\longrightarrow$ ASSIGN\_MARK \varname{EXPRESSION\_TWO} \varname{EXPRESSION\_V} \\
+	\num & & $\longrightarrow$ $\epsilon$ \\ [+10pt]
 	\num & \varname{EXPRESSION\_TWO} & $\longrightarrow$ \varname{EXPRESSION\_THREE} \varname{EXPRESSION\_TWO\_V} \\ [+10pt]
-	\num & \varname{EXPRESSION\_TWO\_V} & $\longrightarrow$ ASSIGN\_MARK \varname{EXPRESSION\_THREE} \varname{EXPRESSION\_TWO\_V} \\
+	\num & \varname{EXPRESSION\_TWO\_V} & $\longrightarrow$ LAZY\_OR \varname{EXPRESSION\_THREE} \varname{EXPRESSION\_TWO\_V} \\
 	\num & & $\longrightarrow$ $\epsilon$ \\ [+10pt]
 	\num & \varname{EXPRESSION\_THREE} & $\longrightarrow$ \varname{EXPRESSION\_FOUR} \varname{EXPRESSION\_THREE\_V} \\ [+10pt]
-	\num & \varname{EXPRESSION\_THREE\_V} & $\longrightarrow$ LAZY\_OR \varname{EXPRESSION\_FOUR} \varname{EXPRESSION\_THREE\_V} \\
+	\num & \varname{EXPRESSION\_THREE\_V} & $\longrightarrow$ LAZY\_AND \varname{EXPRESSION\_FOUR} \varname{EXPRESSION\_THREE\_V} \\
 	\num & & $\longrightarrow$ $\epsilon$ \\ [+10pt]
 	\num & \varname{EXPRESSION\_FOUR} & $\longrightarrow$ \varname{EXPRESSION\_FIVE} \varname{EXPRESSION\_FOUR\_V} \\ [+10pt]
-	\num & \varname{EXPRESSION\_FOUR\_V} & $\longrightarrow$ LAZY\_AND \varname{EXPRESSION\_FIVE} \varname{EXPRESSION\_FOUR\_V} \\
+	\num & \varname{EXPRESSION\_FOUR\_V} & $\longrightarrow$ \varname{EXPRESSION\_FOUR\_F} \varname{EXPRESSION\_FIVE} \\
 	\num & & $\longrightarrow$ $\epsilon$ \\ [+10pt]
-	\num & \varname{EXPRESSION\_FIVE} & $\longrightarrow$ \varname{EXPRESSION\_SIX} \varname{EXPRESSION\_FIVE\_V} \\ [+10pt]
-	\num & \varname{EXPRESSION\_FIVE\_V} & $\longrightarrow$ \varname{EXPRESSION\_FIVE\_F} \varname{EXPRESSION\_SIX} \\
-	\num & & $\longrightarrow$ $\epsilon$ \\ [+10pt]
-	\num & \varname{EXPRESSION\_FIVE\_F} & $\longrightarrow$ DIFFERENT \\
+	\num & \varname{EXPRESSION\_FOUR\_F} & $\longrightarrow$ DIFFERENT \\
 	\num & & $\longrightarrow$ EQ \\
 	\num & & $\longrightarrow$ EQUALS \\
 	\num & & $\longrightarrow$ NE \\ [+10pt]
-	\num & \varname{EXPRESSION\_SIX} & $\longrightarrow$ \varname{EXPRESSION\_SEVEN} \varname{EXPRESSION\_SIX\_V} \\ [+10pt]
-	\num & \varname{EXPRESSION\_SIX\_V} & $\longrightarrow$ \varname{EXPRESSION\_SIX\_F} \varname{EXPRESSION\_SEVEN} \\
+	\num & \varname{EXPRESSION\_FIVE} & $\longrightarrow$ \varname{EXPRESSION\_SIX} \varname{EXPRESSION\_FIVE\_V} \\ [+10pt]
+	\num & \varname{EXPRESSION\_FIVE\_V} & $\longrightarrow$ \varname{EXPRESSION\_FIVE\_F} \varname{EXPRESSION\_SIX} \\
 	\num & & $\longrightarrow$ $\epsilon$ \\ [+10pt]
-	\num & \varname{EXPRESSION\_SIX\_F} & $\longrightarrow$ GE \\
+	\num & \varname{EXPRESSION\_FIVE\_F} & $\longrightarrow$ GE \\
 	\num & & $\longrightarrow$ GREATER \\
 	\num & & $\longrightarrow$ GREATER\_EQUALS \\
 	\num & & $\longrightarrow$ GT \\
@@ -305,24 +303,24 @@
 	\num & & $\longrightarrow$ LOWER \\
 	\num & & $\longrightarrow$ LOWER\_EQUALS \\
 	\num & & $\longrightarrow$ LT \\ [+10pt]
+	\num & \varname{EXPRESSION\_SIX} & $\longrightarrow$ \varname{EXPRESSION\_SEVEN} \varname{EXPRESSION\_SIX\_V} \\ [+10pt]
+	\num & \varname{EXPRESSION\_SIX\_V} & $\longrightarrow$ \varname{EXPRESSION\_SIX\_F} \varname{EXPRESSION\_SEVEN} \\ & & \varname{EXPRESSION\_SIX\_V} \\
+	\num & & $\longrightarrow$ $\epsilon$ \\ [+10pt]
+	\num & \varname{EXPRESSION\_SIX\_F} & $\longrightarrow$ PLUS \\
+	\num & & $\longrightarrow$ MINUS \\
+	\num & & $\longrightarrow$ CONCAT\_MARK \\ [+10pt]
 	\num & \varname{EXPRESSION\_SEVEN} & $\longrightarrow$ \varname{EXPRESSION\_EIGHT} \varname{EXPRESSION\_SEVEN\_V} \\ [+10pt]
 	\num & \varname{EXPRESSION\_SEVEN\_V} & $\longrightarrow$ \varname{EXPRESSION\_SEVEN\_F} \varname{EXPRESSION\_EIGHT} \\ & & \varname{EXPRESSION\_SEVEN\_V} \\
 	\num & & $\longrightarrow$ $\epsilon$ \\ [+10pt]
-	\num & \varname{EXPRESSION\_SEVEN\_F} & $\longrightarrow$ PLUS \\
-	\num & & $\longrightarrow$ MINUS \\
-	\num & & $\longrightarrow$ CONCAT\_MARK \\ [+10pt]
-	\num & \varname{EXPRESSION\_EIGHT} & $\longrightarrow$ \varname{EXPRESSION\_NINE} \varname{EXPRESSION\_EIGHT\_V} \\ [+10pt]
-	\num & \varname{EXPRESSION\_EIGHT\_V} & $\longrightarrow$ \varname{EXPRESSION\_EIGHT\_F} \varname{EXPRESSION\_NINE} \\ & & \varname{EXPRESSION\_EIGHT\_V} \\
-	\num & & $\longrightarrow$ $\epsilon$ \\ [+10pt]
-	\num & \varname{EXPRESSION\_EIGHT\_F} & $\longrightarrow$ TIMES \\
+	\num & \varname{EXPRESSION\_SEVEN\_F} & $\longrightarrow$ TIMES \\
 	\num & & $\longrightarrow$ DIVIDE \\ [+10pt]
-	\num & \varname{EXPRESSION\_NINE} & $\longrightarrow$ \varname{EXPRESSION\_NINE\_V} \varname{EXPRESSION\_TEN} \\ [+10pt]
-	\num & \varname{EXPRESSION\_NINE\_V} & $\longrightarrow$ \varname{EXPRESSION\_NINE\_F} \varname{EXPRESSION\_NINE\_V} \\
+	\num & \varname{EXPRESSION\_EIGHT} & $\longrightarrow$ \varname{EXPRESSION\_EIGHT\_V} \varname{EXPRESSION\_NINE} \\ [+10pt]
+	\num & \varname{EXPRESSION\_EIGHT\_V} & $\longrightarrow$ \varname{EXPRESSION\_EIGHT\_F} \varname{EXPRESSION\_EIGHT\_V} \\
 	\num & & $\longrightarrow$ $\epsilon$ \\ [+10pt]
-	\num & \varname{EXPRESSION\_NINE\_F} & $\longrightarrow$ NOT  \\
+	\num & \varname{EXPRESSION\_EIGHT\_F} & $\longrightarrow$ NOT  \\
 	\num & & $\longrightarrow$ PLUS \\
 	\num & & $\longrightarrow$ MINUS \\ [+10pt]
-	\num & \varname{EXPRESSION\_TEN} & $\longrightarrow$ LPAR \varname{EXPRESSION} RPAR \\
+	\num & \varname{EXPRESSION\_NINE} & $\longrightarrow$ LPAR \varname{EXPRESSION} RPAR \\
 	\num & & $\longrightarrow$ \varname{SIMPLE\_EXPRESSION} \\ [+10pt]
 	\num & \varname{SIMPLE\_EXPRESSION} & $\longrightarrow$ \varname{FUNCTION\_CALL} \\
 	\num & & $\longrightarrow$ INTEGER \\

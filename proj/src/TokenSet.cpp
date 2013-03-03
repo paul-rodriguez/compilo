@@ -50,5 +50,5 @@ const TokenSet TokenSet::f_expression = TokenSet()
 
 const TokenSet TokenSet::f_condition = TokenSet()
 		.addToken(Token::IF)
-		.addToken(Token::UNLESS)
+		.addToken(Token::UNLESS);
 

@@ -184,6 +184,57 @@ void Parser::condition_end()
 
 void Parser::expression()
 {
+	expression_two();
+	expression_v();
+}
+
+void Parser::expression_v()
+{
+	nextToken();
+	if(isToken(Token::ASSIGN_MARK))
+	{
+		match(Token::ASSIGN_MARK);
+		expression_two();
+		expression_v();
+	}
+}
+
+void Parser::expression_two()
+{
+	expression_three();
+	expression_two_v();
+}
+
+void Parser::expression_two_v()
+{
+	nextToken();
+	if(isToken(Token::LAZY_OR))
+	{
+		match(Token::LAZY_OR);
+		expression_three();
+		expression_two_v();
+	}
+}
+
+void Parser::expression_three()
+{
+	expression_four();
+	expression_three_v();
+}
+
+void Parser::expression_three_v()
+{
+	nextToken();
+	if(isToken(Token::LAZY_AND))
+	{
+		match(Token::LAZY_AND);
+		expression_four();
+		expression_three_v();
+	}
+}
+
+void Parser::expression_four()
+{
 
 }
 
