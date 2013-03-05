@@ -326,6 +326,7 @@ void Scanner::float_integer()
 		}
 		else
 		{
+			throw runtime_error("Error : syntax error");
 			token.setId(Token::INTEGER);
 			token.setValue(tmp);
 			file.seekg(-2, ios::cur);
