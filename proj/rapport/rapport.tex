@@ -295,14 +295,14 @@
 	\num & \varname{EXPRESSION\_FIVE} & $\longrightarrow$ \varname{EXPRESSION\_SIX} \varname{EXPRESSION\_FIVE\_V} \\ [+10pt]
 	\num & \varname{EXPRESSION\_FIVE\_V} & $\longrightarrow$ \varname{EXPRESSION\_FIVE\_F} \varname{EXPRESSION\_SIX} \\
 	\num & & $\longrightarrow$ $\epsilon$ \\ [+10pt]
-	\num & \varname{EXPRESSION\_FIVE\_F} & $\longrightarrow$ GE \\
-	\num & & $\longrightarrow$ GREATER \\
+	\num & \varname{EXPRESSION\_FIVE\_F} & $\longrightarrow$ GREATER \\
 	\num & & $\longrightarrow$ GREATER\_EQUALS \\
 	\num & & $\longrightarrow$ GT \\
-	\num & & $\longrightarrow$ LE \\
+	\num & & $\longrightarrow$ GE \\
 	\num & & $\longrightarrow$ LOWER \\
 	\num & & $\longrightarrow$ LOWER\_EQUALS \\
-	\num & & $\longrightarrow$ LT \\ [+10pt]
+	\num & & $\longrightarrow$ LT \\
+	\num & & $\longrightarrow$ LE \\ [+10pt]
 	\num & \varname{EXPRESSION\_SIX} & $\longrightarrow$ \varname{EXPRESSION\_SEVEN} \varname{EXPRESSION\_SIX\_V} \\ [+10pt]
 	\num & \varname{EXPRESSION\_SIX\_V} & $\longrightarrow$ \varname{EXPRESSION\_SIX\_F} \varname{EXPRESSION\_SEVEN} \\ & & \varname{EXPRESSION\_SIX\_V} \\
 	\num & & $\longrightarrow$ $\epsilon$ \\ [+10pt]
@@ -314,9 +314,8 @@
 	\num & & $\longrightarrow$ $\epsilon$ \\ [+10pt]
 	\num & \varname{EXPRESSION\_SEVEN\_F} & $\longrightarrow$ TIMES \\
 	\num & & $\longrightarrow$ DIVIDE \\ [+10pt]
-	\num & \varname{EXPRESSION\_EIGHT} & $\longrightarrow$ \varname{EXPRESSION\_EIGHT\_V} \varname{EXPRESSION\_NINE} \\ [+10pt]
-	\num & \varname{EXPRESSION\_EIGHT\_V} & $\longrightarrow$ \varname{EXPRESSION\_EIGHT\_F} \varname{EXPRESSION\_EIGHT\_V} \\
-	\num & & $\longrightarrow$ $\epsilon$ \\ [+10pt]
+	\num & \varname{EXPRESSION\_EIGHT} & $\longrightarrow$ \varname{EXPRESSION\_NINE} \\
+	\num & & $\longrightarrow$ \varname{EXPRESSION\_EIGHT\_F} \varname{EXPRESSION\_EIGHT} \\ [+10pt]
 	\num & \varname{EXPRESSION\_EIGHT\_F} & $\longrightarrow$ NOT  \\
 	\num & & $\longrightarrow$ PLUS \\
 	\num & & $\longrightarrow$ MINUS \\ [+10pt]
@@ -334,13 +333,60 @@
 	\num & & $\longrightarrow$ $\epsilon$ \\
 \end{longtable}
 
-%\begin{landscape}
-%\begin{longtable}{c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c}
-%	\centering
-%	& var & identifier & integer & float & string & lbrace & rbrace & lpar & rpar & semicolon & call\_mark & plus & minus & %times & divide & not & notletters & lazy\_and  \\ \hline
-%	\verb@<@PROGRAM\verb@>@ & & & & &
-%\end{longtable}
-%\end{landscape}
+Notes sur la table d'actions : 
+\begin{itemize}
+  \item ``literal'' signifie integer, float ou string
+\end{itemize}
+
+
+\newcommand{\g}{$>$}
+\newcommand{\h}{$<$}
+
+\begin{landscape}
+\tabcolsep=0.10cm
+\small
+\begin{longtable}{c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c}
+\centering
+								&if	&unless	&else	&elsif 	&sub&return	&=	&\{	&\}	&(	&) 	&,	&;	&\& &\| &\&\& 	&!=	&eq &== &ne &\g	&\g=&gt &ge &\h	&\h=&lt &le &+ 	&- 	&. 	&* 	&/ 	&! 	&id &integer&float	&string	&var\\ \hline
+\varname{PROGRAM}				&1 	&1 		& 		& 		&1	&		&	&1	& 	&1	&1	& 	&	&1	& 	& 		& 	&	&	&	&	&	&	&	&	&	&	&	&1	&1	& 	& 	&	&1	& 	&1		&1		&1		&1	\\ \hline
+\varname{PROGRAM\_V} 			&2 	&2 		& 		& 		&2	&		&	&2	& 	&2	&2	& 	&	&2	& 	& 		& 	&	&	&	&	&	&	&	&	&	&	&	&2	&2	& 	& 	&	&2	& 	&2		&2		&2		&2	\\ \hline
+\varname{PROGRAM\_F}			&5	&5 		& 		& 		&4	&		&	&5 	&5 	&5	&5 	& 	&	&5	& 	& 		& 	&	&	&	&	&	&	&	&	&	&	&	&5 	&5 	& 	& 	&	&5 	& 	&5 		&5 		&5 		&5 	\\ \hline
+\varname{FUNCTION} 				&	& 		& 		& 		&6	&		&	& 	& 	&	& 	& 	&	&	& 	& 		& 	&	&	&	&	&	&	&	&	&	&	&	& 	& 	& 	& 	&	& 	& 	& 		& 		& 		& 	\\ \hline
+\varname{FUNCTION\_ARGUMENT} 	&	& 		& 		& 		&	&		&	&8 	& 	&7	& 	& 	&	&	& 	& 		& 	&	&	&	&	&	&	&	&	&	&	&	& 	& 	& 	& 	&	& 	& 	& 		& 		& 		& 	\\ \hline
+\varname{ARGUMENT\_LIST} 		&	& 		& 		& 		&	&		&	& 	& 	&	&10	& 	&	&	& 	& 		& 	&	&	&	&	&	&	&	&	&	&	&	& 	& 	& 	& 	&	& 	& 	& 		& 		& 		&9 	\\ \hline
+\varname{ARGUMENT\_LIST\_V} 	&	& 		& 		& 		&	&		&	& 	& 	&	&12	&11	&	&	& 	& 		& 	&	&	&	&	&	&	&	&	&	&	&	& 	& 	& 	& 	&	& 	& 	& 		& 		& 		&	\\ \hline
+\varname{INSTRUCTION\_LIST} 	&13	&13		& 		& 		&	&13		&	&13	&14	&13	&	&	&	&13	& 	& 		& 	&	&	&	&	&	&	&	&	&	&	&	&13	&13	& 	& 	&	&13	& 	&13		&13		&13		&13	\\ \hline
+\varname{INSTRUCTION} 			&18	&18		& 		& 		&	&16		&	&17	&	&15	&	&	&	&15	& 	& 		& 	&	&	&	&	&	&	&	&	&	&	&	&15	&15	& 	& 	&	&15	& 	&15		&15		&15		&15	\\ \hline
+\varname{INSTRUCTION\_F} 		&19	&19		& 		& 		&	&		&	&	&	&	&	&	&20	&	& 	& 		& 	&	&	&	&	&	&	&	&	&	&	&	&	&	& 	& 	&	&	& 	&		&		&		&	\\ \hline
+\varname{CONDITION} 			&21	&22		& 		& 		&	&		&	&	&	&	&	&	&	&	& 	& 		& 	&	&	&	&	&	&	&	&	&	&	&	&	&	& 	& 	&	&	& 	&		&		&		&	\\ \hline
+\varname{CONDITION\_END} 		&	&		&24 	&23		&25	&25		&	&25	&25	&25	&	&	&	&25	& 	& 		& 	&	&	&	&	&	&	&	&	&	&	&	&25	&25	& 	& 	&	&25	& 	&25		&25		&25		&25	\\ \hline
+\varname{EXPRESSION} 			&	&		&	 	&		&	&		&	&	&	&26	&	&	&	&26	& 	& 		& 	&	&	&	&	&	&	&	&	&	&	&	&26	&26	& 	& 	&	&26	& 	&26		&26		&26		&26	\\ \hline
+\varname{EXPRESSION\_V} 		&28	&28		&	 	&		&	&		&27	&28	&	&	&28	&28	&28	&	& 	& 		& 	&	&	&	&	&	&	&	&	&	&	&	&	&	& 	& 	&	&	& 	&		&		&		&	\\ \hline
+\varname{EXPRESSION\_TWO} 		&	&		&	 	&		&	&		&	&	&	&29	&	&	&	&29	& 	& 		& 	&	&	&	&	&	&	&	&	&	&	&	&29	&29	& 	& 	&	&29	& 	&29		&29		&29		&29	\\ \hline
+\varname{EXPRESSION\_TWO\_V} 	&31	&31		&	 	&		&	&		&31	&31	&	&	&31	&31	&31	&	&30	& 		& 	&	&	&	&	&	&	&	&	&	&	&	&	&	& 	& 	&	&	& 	&		&		&		&	\\ \hline
+\varname{EXPRESSION\_THREE} 	&	&		&	 	&		&	&		&	&	&	&32	&	&	&	&32	& 	& 		& 	&	&	&	&	&	&	&	&	&	&	&	&32	&32	& 	& 	&	&32	& 	&32		&32		&32		&32	\\ \hline
+\varname{EXPRESSION\_THREE\_V} 	&34	&34		&	 	&		&	&		&34	&34	&	&	&34	&34	&34	&	&34	&33		& 	&	&	&	&	&	&	&	&	&	&	&	&	&	& 	& 	&	&	& 	&		&		&		&	\\ \hline
+\varname{EXPRESSION\_FOUR} 		&	&		&	 	&		&	&		&	&	&	&35	&	&	&	&35	& 	& 		& 	&	&	&	&	&	&	&	&	&	&	&	&35	&35	& 	& 	&	&35	& 	&35		&35		&35		&35	\\ \hline
+\varname{EXPRESSION\_FOUR\_V} 	&37	&37		&	 	&		&	&		&37	&37	&	&	&37	&37	&37	&	&37	&37		&36	&36	&36	&36	&	&	&	&	&	&	&	&	&	&	& 	& 	&	&	& 	&		&		&		&	\\ \hline
+\varname{EXPRESSION\_FOUR\_F} 	&	&		&	 	&		&	&		&	&	&	&	&	&	&	&	&	&		&38	&39	&40	&41	&	&	&	&	&	&	&	&	&	&	& 	& 	&	&	& 	&		&		&		&	\\ \hline
+\varname{EXPRESSION\_FIVE} 		&	&		&	 	&		&	&		&	&	&	&42	&	&	&	&42	& 	& 		& 	&	&	&	&	&	&	&	&	&	&	&	&42	&42	& 	& 	&	&42	& 	&42		&42		&42		&42	\\ \hline
+\varname{EXPRESSION\_FIVE\_V} 	&44	&44		&	 	&		&	&		&44	&44	&	&	&44	&44	&44	&	&44	&44		&44	&44	&44	&44	&43	&43	&43	&43	&43	&43	&43	&43	&	&	& 	& 	&	&	& 	&		&		&		&	\\ \hline
+\varname{EXPRESSION\_FIVE\_F} 	&	&		&	 	&		&	&		&	&	&	&	&	&	&	&	&	&		&	&	&	&	&45	&46	&47	&48	&49	&50	&51	&52	&	&	& 	& 	&	&	& 	&		&		&		&	\\ \hline
+\varname{EXPRESSION\_SIX} 		&	&		&	 	&		&	&		&	&	&	&53	&	&	&	&53	& 	& 		& 	&	&	&	&	&	&	&	&	&	&	&	&53	&53	& 	& 	&	&53	& 	&53		&53		&53		&53	\\ \hline
+\varname{EXPRESSION\_SIX\_V} 	&55	&55		&	 	&		&	&		&55	&55	&	&	&55	&55	&55	&	&55	&55		&55	&55	&55	&55	&55	&55	&55	&55	&55	&55	&55	&55	&54	&54	&54	& 	&	&	& 	&		&		&		&	\\ \hline
+\varname{EXPRESSION\_SIX\_F} 	&	&		&	 	&		&	&		&	&	&	&	&	&	&	&	&	&		&	&	&	&	&	&	&	&	&	&	&	&	&56	&57	&58	& 	&	&	& 	&		&		&		&	\\ \hline
+\varname{EXPRESSION\_SEVEN} 	&	&		&	 	&		&	&		&	&	&	&59	&	&	&	&59	& 	& 		& 	&	&	&	&	&	&	&	&	&	&	&	&59	&59	& 	& 	&	&59	& 	&59		&59		&59		&59	\\ \hline
+\varname{EXPRESSION\_SEVEN\_V} 	&61	&61		&	 	&		&	&		&61	&61	&	&	&61	&61	&61	&	&61	&61		&61	&61	&61	&61	&61	&61	&61	&61	&61	&61	&61	&61	&61	&61	&61	&60	&60	&	& 	&		&		&		&	\\ \hline
+\varname{EXPRESSION\_SEVEN\_F} 	&	&		&	 	&		&	&		&	&	&	&	&	&	&	&	&	&		&	&	&	&	&	&	&	&	&	&	&	&	&	&	&	&62	&63	&	& 	&		&		&		&	\\ \hline
+\varname{EXPRESSION\_EIGHT} 	&	&		&	 	&		&	&		&	&	&	&64	&	&	&	&64	&	&		&	&	&	&	&	&	&	&	&	&	&	&	&65	&65	&	&	&	&65	& 	&64		&64		&64		&64	\\ \hline
+\varname{EXPRESSION\_EIGHT\_F} 	&	&		&	 	&		&	&		&	&	&	&	&	&	&	&	&	&		&	&	&	&	&	&	&	&	&	&	&	&	&68	&67	&	&	&	&66	& 	&		&		&		&	\\ \hline
+\varname{EXPRESSION\_NINE} 		&	&		&	 	&		&	&		&	&	&	&69	&	&	&	&70	&	&		&	&	&	&	&	&	&	&	&	&	&	&	&	&	&	&	&	&	& 	&70		&70		&70		&70	\\ \hline
+\varname{SIMPLE\_EXPRESSION} 	&	&		&	 	&		&	&		&	&	&	&	&	&	&	&71	&	&		&	&	&	&	&	&	&	&	&	&	&	&	&	&	&	&	&	&	& 	&72		&73		&74		&75	\\ \hline
+\varname{FUNCTION\_CALL} 		&	&		&	 	&		&	&		&	&	&	&	&	&	&	&76	&	&		&	&	&	&	&	&	&	&	&	&	&	&	&	&	&	&	&	&	& 	&		&		&		&	\\ \hline
+\varname{ARGUMENT\_CALL\_LIST} 	&	& 		& 		& 		&	&		&	& 	& 	&77	&78	& 	&	&77	& 	& 		& 	&	&	&	&	&	&	&	&	&	&	&	&77 &77	& 	& 	&	&77	& 	&77		&77		&77		&77	\\ \hline
+\varname{ARGUMENT\_CALL\_LIST\_V} &	& 		& 		& 		&	&		&	& 	& 	&	&80	&79	&	&	& 	& 		& 	&	&	&	&	&	&	&	&	&	&	&	& 	& 	& 	& 	&	& 	& 	& 		& 		& 		&	\\ \hline
+\end{longtable}
+\end{landscape}
 
 remarques : 
 1) on a enlevé la possibilité d'omettre les () autour des listes d'arguments a
@@ -349,5 +395,12 @@ follow de toutes les expressions
 
 2) On a supprimé le ``not'', car sa priorité faible engendre un comportement
 non-LL(1), le follow de expression prend le follow de toutes les expressions
+
+3) La grammaire autorise l'assignation de n'importe quelle expression a une
+autre, c'est lors de l'analyse semantique qu'on determine ce qui est lvalue
+
+
+
+!!!!changer code expression_8 !!!
 
 \end{document}
