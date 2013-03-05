@@ -23,6 +23,20 @@ void Parser::program()
 	program_v();
 }
 
+void Parser::program_v()
+{
+	nextToken();
+	if(isToken(Token::END))
+	{
+		end();
+	}
+	else
+	{
+		program_f();
+		program_v();
+	}
+}
+
 void Parser::program_f()
 {
 	nextToken();
@@ -38,20 +52,6 @@ void Parser::program_f()
 	{
 		error();
 	}
-}
-
-void Parser::program_v()
-{
-	nextToken();
-	if(isToken(Token::END))
-	{
-		end();
-	}
-	else
-	{
-		program_f();
-		program_v();
-	};
 }
 
 void Parser::function()
@@ -70,7 +70,7 @@ void Parser::function_argument()
 	nextToken();
 	if(isToken(Token::LPAR))
 	{
-		match(Token::LPAR);
+		match();
 		argument_list();
 		match(Token::RPAR);
 	}
@@ -81,7 +81,7 @@ void Parser::argument_list()
 	nextToken();
 	if(isToken(Token::VAR))
 	{
-		match(Token::VAR);
+		match();
 		argument_list_v();
 	}
 }
@@ -91,7 +91,7 @@ void Parser::argument_list_v()
 	nextToken();
 	if(isToken(Token::COMMA))
 	{
-		match(Token::COMMA);
+		match();
 		match(Token::VAR);
 		argument_list_v();
 	}
@@ -112,14 +112,14 @@ void Parser::instruction()
 	nextToken();
 	if(isToken(Token::RETURN))
 	{
-		match(Token::RETURN);
+		match();
 		expression();
 		instruction_f();
 		match(Token::SEMICOLON);
 	}
 	else if(isToken(Token::LBRACE))
 	{
-		match(Token::LBRACE);
+		match();
 		instruction_list();
 		match(Token::RBRACE);
 	}
@@ -144,16 +144,26 @@ void Parser::instruction()
 	}
 }
 
+void Parser::instruction_f()
+{
+	nextToken();
+	if(isToken(TokenSet::f_condition))
+	{
+		condition();
+		expression();
+	}
+}
+
 void Parser::condition()
 {
 	nextToken();
 	if(isToken(Token::IF))
 	{
-		match(Token::IF);
+		match();
 	}
 	else if(isToken(Token::UNLESS))
 	{
-		match(Token::UNLESS);
+		match();
 	}
 	else
 	{
@@ -166,14 +176,14 @@ void Parser::condition_end()
 	nextToken();
 	if(isToken(Token::ELSE))
 	{
-		match(Token::ELSE);
+		match();
 		match(Token::LBRACE);
 		instruction_list();
 		match(Token::RBRACE);
 	}
 	else if (isToken(Token::ELSIF))
 	{
-		match(Token::ELSIF);
+		match();
 		expression();
 		match(Token::LBRACE);
 		instruction_list();
@@ -193,7 +203,7 @@ void Parser::expression_v()
 	nextToken();
 	if(isToken(Token::ASSIGN_MARK))
 	{
-		match(Token::ASSIGN_MARK);
+		match();
 		expression_two();
 		expression_v();
 	}
@@ -210,7 +220,7 @@ void Parser::expression_two_v()
 	nextToken();
 	if(isToken(Token::LAZY_OR))
 	{
-		match(Token::LAZY_OR);
+		match();
 		expression_three();
 		expression_two_v();
 	}
@@ -227,7 +237,7 @@ void Parser::expression_three_v()
 	nextToken();
 	if(isToken(Token::LAZY_AND))
 	{
-		match(Token::LAZY_AND);
+		match();
 		expression_four();
 		expression_three_v();
 	}
@@ -235,18 +245,163 @@ void Parser::expression_three_v()
 
 void Parser::expression_four()
 {
-
+	expression_five();
+	expression_four_v();
 }
 
-void Parser::instruction_f()
+void Parser::expression_four_v()
 {
-	if(isToken(TokenSet::f_condition))
+	nextToken();
+	if(isToken(TokenSet::f_expression_four_v))
 	{
-		condition();
-		expression();
+		match();
+		expression_five();
 	}
 }
 
+void Parser::expression_five()
+{
+	expression_six();
+	expression_five_v();
+}
+
+void Parser::expression_five_v()
+{
+	nextToken();
+	if(isToken(TokenSet::f_expression_five_v))
+	{
+		match();
+		expression_six();
+	}
+}
+
+void Parser::expression_six()
+{
+	expression_seven();
+	expression_six_v();
+}
+
+void Parser::expression_six_v()
+{
+	nextToken();
+	if(isToken(TokenSet::f_expression_six_v))
+	{
+		match();
+		expression_seven();
+		expression_six_v();
+	}
+}
+
+void Parser::expression_seven()
+{
+	expression_eight();
+	expression_seven_v();
+}
+
+void Parser::expression_seven_v()
+{
+	nextToken();
+	if (isToken(TokenSet::f_expression_seven_v))
+	{
+		match();
+		expression_eight();
+		expression_seven_v();
+	}
+}
+
+void Parser::expression_eight()
+{
+	expression_eight_v();
+	expression_nine();
+}
+
+void Parser::expression_eight_v()
+{
+	nextToken();
+	if(isToken(TokenSet::f_expression_eight_v))
+	{
+		match();
+		expression_eight_v();
+	}
+}
+
+void Parser::expression_nine()
+{
+	nextToken();
+	if (isToken(Token::LPAR))
+	{
+		match();
+		expression();
+		match(Token::RPAR);
+	}
+	else if (isToken(TokenSet::f_simple_expression))
+	{
+		simple_expression();
+	}
+	else
+	{
+		error();
+	}
+}
+
+void Parser::simple_expression()
+{
+	nextToken();
+	if (isToken(Token::CALL_MARK))
+	{
+		function_call();
+	}
+	else if (isToken(Token::INTEGER))
+	{
+		match(Token::INTEGER);
+	}
+	else if (isToken(Token::FLOAT))
+	{
+		match(Token::FLOAT);
+	}
+	else if (isToken(Token::STRING))
+	{
+		match(Token::STRING);
+	}
+	else if (isToken(Token::VAR))
+	{
+		match(Token::VAR);
+	}
+	else
+	{
+		error();
+	}
+}
+
+void Parser::function_call()
+{
+	match(Token::CALL_MARK);
+	match(Token::IDENTIFIER);
+	match(Token::LPAR);
+	argument_call_list();
+	match(Token::RPAR);
+}
+
+void Parser::argument_call_list()
+{
+	nextToken();
+	if (isToken(TokenSet::f_expression))
+	{
+		expression();
+		argument_call_list_v();
+	}
+}
+
+void Parser::argument_call_list_v()
+{
+	nextToken();
+	if (isToken(Token::COMMA))
+	{
+		match();
+		expression();
+		argument_call_list_v();
+	}
+}
 
 void Parser::end()
 {
@@ -263,6 +418,12 @@ void Parser::run()
 //	while(tok().id() != Token::END);
 }
 
+void Parser::match()
+{
+	delete tok_;
+	tok_ = NULL;
+}
+
 void Parser::match(Token::TokenID id)
 {
 	nextToken();
@@ -270,9 +431,20 @@ void Parser::match(Token::TokenID id)
 	{
 		//TODO store token info
 
+		match();
+	}
+	else
+	{
+		error();
+	}
+}
 
-		delete tok_;
-		tok_ = NULL;
+void Parser::match(const TokenSet& set)
+{
+	nextToken();
+	if (isToken(set))
+	{
+		match();
 	}
 	else
 	{

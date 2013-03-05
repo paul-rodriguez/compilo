@@ -19,7 +19,9 @@ protected:
 	const Token& tok() const;
 	void setTok(const Token&);
 
+	void match();
 	void match(Token::TokenID);
+	void match(const TokenSet&);
 	void error();
 	void error(Token::TokenID tok);
 	void nextToken();
@@ -46,15 +48,24 @@ protected:
 	void expression_three_v();
 	void expression_four();
 	void expression_four_v();
+	void expression_four_f();
 	void expression_five();
 	void expression_five_v();
+	void expression_five_f();
 	void expression_six();
 	void expression_six_v();
+	void expression_six_f();
 	void expression_seven();
 	void expression_seven_v();
+	void expression_seven_f();
 	void expression_eight();
 	void expression_eight_v();
+	void expression_eight_f();
 	void expression_nine();
+	void simple_expression();
+	void function_call();
+	void argument_call_list();
+	void argument_call_list_v();
 
 	void end();
 
