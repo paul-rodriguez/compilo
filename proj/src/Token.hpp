@@ -70,6 +70,7 @@ class Token
 		bool isLast() const;
 		TokenID id() const;
 		const string& value() const;
+		string str() const;
 
 	private:
 		TokenID id_;

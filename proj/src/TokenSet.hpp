@@ -21,6 +21,7 @@ public:
 	static const TokenSet f_expression_six_v;
 	static const TokenSet f_expression_seven_v;
 	static const TokenSet f_expression_eight_v;
+	static const TokenSet f_expression_nine;
 	static const TokenSet f_simple_expression;
 
 protected:

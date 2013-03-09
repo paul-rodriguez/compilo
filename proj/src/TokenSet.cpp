@@ -82,6 +82,14 @@ const TokenSet TokenSet::f_expression_eight_v = TokenSet()
 		.addToken(Token::PLUS)
 		.addToken(Token::MINUS);
 
+const TokenSet TokenSet::f_expression_nine = TokenSet()
+		.addToken(Token::LPAR)
+		.addToken(Token::CALL_MARK)
+		.addToken(Token::INTEGER)
+		.addToken(Token::FLOAT)
+		.addToken(Token::STRING)
+		.addToken(Token::VAR);
+
 const TokenSet TokenSet::f_simple_expression = TokenSet()
 		.addToken(Token::CALL_MARK)
 		.addToken(Token::INTEGER)

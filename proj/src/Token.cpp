@@ -1,4 +1,5 @@
 #include "Token.hpp"
+#include <sstream>
 
 Token::Token(TokenID id, string str) :
 	id_(id),
@@ -239,4 +240,11 @@ ostream& operator<<(ostream& out, const Token& t)
 		out << "SUBSTR";
 	}
 	return out;
+}
+
+string Token::str() const
+{
+	ostringstream o;
+	o<<*this;
+	return o.str();
 }

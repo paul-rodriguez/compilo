@@ -311,17 +311,19 @@ void Parser::expression_seven_v()
 
 void Parser::expression_eight()
 {
-	expression_eight_v();
-	expression_nine();
-}
-
-void Parser::expression_eight_v()
-{
 	nextToken();
 	if(isToken(TokenSet::f_expression_eight_v))
 	{
 		match();
-		expression_eight_v();
+		expression_eight();
+	}
+	else if(isToken(TokenSet::f_expression_nine))
+	{
+		expression_nine();
+	}
+	else
+	{
+		error();
 	}
 }
 
@@ -454,7 +456,7 @@ void Parser::match(const TokenSet& set)
 
 void Parser::error()
 {
-	throw runtime_error("Syntax error");
+	throw runtime_error("Syntax error "+tok().str());
 }
 
 
