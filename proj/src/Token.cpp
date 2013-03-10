@@ -25,7 +25,7 @@ void Token::setId(TokenID id)
 	id_ = id;
 }
 
-void Token::setValue(string value)
+void Token::setValue(const std::string& value)
 {
 	value_ = value;
 }

@@ -66,7 +66,7 @@ class Token
 		Token(const Token&);
 		~Token();
 		void setId(TokenID);
-		void setValue(string);
+		void setValue(const std::string&);
 		bool isLast() const;
 		TokenID id() const;
 		const string& value() const;

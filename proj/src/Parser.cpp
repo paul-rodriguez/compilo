@@ -60,10 +60,12 @@ void Parser::function()
 {
 	match(Token::SUB);
 	match(Token::IDENTIFIER);
+	cg().function(tokValue());
 	function_argument();
 	match(Token::LBRACE);
 	instruction_list();
 	match(Token::RBRACE);
+	cg().endFunction();
 }
 
 
@@ -84,6 +86,7 @@ void Parser::argument_list()
 	if(isToken(Token::VAR))
 	{
 		match();
+		cg().functionArg(tokValue());
 		argument_list_v();
 	}
 }
@@ -424,6 +427,7 @@ void Parser::run()
 
 void Parser::match()
 {
+	setTokValue(tok().value());
 	delete tok_;
 	tok_ = NULL;
 }
@@ -433,8 +437,6 @@ void Parser::match(Token::TokenID id)
 	nextToken();
 	if(isToken(id))
 	{
-		//TODO store token info
-
 		match();
 	}
 	else
@@ -492,6 +494,9 @@ void Parser::nextToken()
 	}
 }
 
+
+const std::string& Parser::tokValue() const { return tokValue_; }
+void Parser::setTokValue(const std::string& v) { tokValue_ = v; }
 Scanner& Parser::scanner() const { return scanner_; }
 CodeGenerator& Parser::cg() const { return cg_; }
 const Token& Parser::tok() const { return *tok_; }
