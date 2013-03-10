@@ -1,13 +1,16 @@
 sub function($ag,$a)
 {
-	3 + 2;
+	$a = 3;
+	return 3 + 2 + $ag;
 }
 
 
 
 
-$variable 3function 3.5'bonjour'	#
-(){};&+-*/!not&&||==eq!=ne<lt>gt<=le>=ge,.=
-sub if else elsif unless return defined int length print scalar substr
-unlesi iif elseielse subelse =====!==!=!===! # this is a comentkflkdmlgksd ()()()
-4.5.4.5.4.4.5.65.5.68.'hahaha'
+
+
+#$variable 3function 3.5'bonjour'	#
+#(){};&+-*/!not&&||==eq!=ne<lt>gt<=le>=ge,.=
+#sub if else elsif unless return defined int length print scalar substr
+#unlesi iif elseielse subelse =====!==!=!===! # this is a comentkflkdmlgksd ()()()
+#4.5.4.5.4.4.5.65.5.68.'hahaha'

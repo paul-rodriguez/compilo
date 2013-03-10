@@ -5,17 +5,19 @@
 
 class Scanner;
 class TokenSet;
+class CodeGenerator;
 
 class Parser
 {
 public:
-	Parser(Scanner&);
+	Parser(Scanner&,CodeGenerator&);
 	virtual ~Parser();
 
 	void run();
 
 protected:
 	Scanner& scanner() const;
+	CodeGenerator& cg() const;
 	const Token& tok() const;
 	void setTok(const Token&);
 
@@ -71,6 +73,7 @@ protected:
 
 private:
 	Scanner& scanner_;
+	CodeGenerator& cg_;
 	const Token* tok_;
 
 };

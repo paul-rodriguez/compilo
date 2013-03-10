@@ -1,24 +1,26 @@
 #include "Parser.hpp"
 #include "TokenSet.hpp"
 #include "Scanner.hpp"
+#include "CodeGenerator.hpp"
 
 #include<stdexcept>
 
-Parser::Parser(Scanner& scanner):
+Parser::Parser(Scanner& scanner,CodeGenerator& cg):
 	scanner_(scanner),
+	cg_(cg),
 	tok_(NULL)
 {
-	// TODO Auto-generated constructor stub
-
+	;
 }
 
 Parser::~Parser()
 {
-	// TODO Auto-generated destructor stub
+	;
 }
 
 void Parser::program()
 {
+	cg().program_header();
 	program_f();
 	program_v();
 }
@@ -474,22 +476,23 @@ void Parser::nextToken()
 {
 	if(tok_ == NULL)
 	{
-		bool space = true;
-		while(space)
+		bool skip = true;
+		while(skip)
 		{
 			setTok(*(new Token(scanner().nextToken())));
-			if(tok().id() == Token::SPACE)
+			if(tok().id() == Token::SPACE || tok().id() == Token::COMMENT)
 			{
 				delete tok_;
 			}
 			else
 			{
-				space = false;
+				skip = false;
 			}
 		}
 	}
 }
 
 Scanner& Parser::scanner() const { return scanner_; }
+CodeGenerator& Parser::cg() const { return cg_; }
 const Token& Parser::tok() const { return *tok_; }
 void Parser::setTok(const Token& tok) { tok_ = &tok; }

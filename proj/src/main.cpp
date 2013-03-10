@@ -3,6 +3,7 @@
 #include "Scanner.hpp"
 #include "Parser.hpp"
 #include "Token.hpp"
+#include "CodeGenerator.hpp"
 using namespace std;
 
 int main(int argc, char** argv)
@@ -12,7 +13,8 @@ int main(int argc, char** argv)
 		Scanner sc (argv[1]);
 		try
 		{
-			Parser parser(sc);
+			CodeGenerator cg("code.s");
+			Parser parser(sc,cg);
 			parser.run();
 //			Token t = sc.nextToken();
 //			while (!t.isLast())
