@@ -23,6 +23,7 @@ void Parser::program()
 	cg().program_header();
 	program_f();
 	program_v();
+	cg().endProgram();
 }
 
 void Parser::program_v()
@@ -98,6 +99,7 @@ void Parser::argument_list_v()
 	{
 		match();
 		match(Token::VAR);
+		cg().functionArg(tokValue());
 		argument_list_v();
 	}
 }
@@ -373,6 +375,7 @@ void Parser::simple_expression()
 	else if (isToken(Token::VAR))
 	{
 		match(Token::VAR);
+		cg().var(tokValue());
 	}
 	else
 	{
@@ -384,6 +387,7 @@ void Parser::function_call()
 {
 	match(Token::CALL_MARK);
 	match(Token::IDENTIFIER);
+	cg().functionCall(tokValue());
 	match(Token::LPAR);
 	argument_call_list();
 	match(Token::RPAR);
