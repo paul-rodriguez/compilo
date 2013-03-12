@@ -12,7 +12,8 @@ public:
 
 	const std::string& name() const;
 
-	unsigned argNum() const;
+	unsigned argSize() const;
+	unsigned argIndex(const std::string&) const;
 	void addArg(const std::string&);
 
 protected:

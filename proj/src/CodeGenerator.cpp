@@ -4,6 +4,7 @@
 CodeGenerator::CodeGenerator(const std::string& filename):
 	file_(),
 	filename_(filename),
+	fctDef_(NULL),
 	fct_(NULL),
 	fctMap_()
 {
@@ -40,6 +41,12 @@ void CodeGenerator::program_header()
 		<<".file "<<filename()<<std::endl<<std::endl;
 }
 
+void CodeGenerator::endProgram()
+{
+	 file()<<".ident \"GCC: (GNU) 4.6 20120106 (prerelease)\""<<std::endl
+		<<".section .note.GNU-stack,"",%progbits"<<std::endl;
+}
+
 void CodeGenerator::text()
 {
 	file()<<".text"<<std::endl
@@ -55,35 +62,69 @@ void CodeGenerator::rodata()
 void CodeGenerator::function(const std::string& name)
 {
 	newFct(name);
-	file()<<".global "<<functionName()<<std::endl
-		<<".type "<<functionName()<<", %function"<<std::endl
-		<<functionName()<<":"<<std::endl
-		<<"stmfd sp!, {fp, lr}"<<std::endl;
+	file()<<".global "<<fctDefName()<<std::endl
+		<<".type "<<fctDefName()<<", %function"<<std::endl
+		<<fctDefName()<<":"<<std::endl
+		<<"stmfd sp!, {fp, lr, r4, r5, r6, r7, r8, r9, r10, r11}"<<std::endl //save all registers
+		<<"add fp, sp, #36"<<std::endl; //set fp to point to the first stack address this function owns
 }
 
-void CodeGenerator::functionArg(const std::string& name)
+void CodeGenerator::functionArg(const std::string& name) //arguments above 3 can be loaded from address [fp, #(4*argIndex)] when they are used
 {
-	fct().addArg(name);
+	fctDef().addArg(name);
+	//TODO LocalVariable class
+}
+
+// !!!!! mettre les variables sur le stack comme une machine en polonaise inversée !!!!!
+// !!!!! c'est le seul moyen de pouvoir resoudre des trucs comme 5 + 4 * 7 + 3 +...
+// !!!!! operateur = pop les deux premiers elements du stack, appliquer l'operation, push le resultat
+
+void CodeGenerator::var(const std::string& name)
+{
+	if(isFctDef())
+	{
+		unsigned index = fct().argIndex(name); //erreur possible : variable non definie
+		//TODO verif variable globale
+		if(index < 4)
+		{
+			file()<<"mov r4, r"<<index<<std::endl;
+		}
+		else
+		{
+			file()<<"ldr r4, [fp, #"<<(4*index)<<"]"<<std::endl;
+		}
+		file()<<"str r4, [sp, #-4]!"<<std::endl; //push the variable on the stack
+	}
 }
 
 void CodeGenerator::endFunction()
 {
-	file()<<"ldmfd sp!, {fp, pc}"<<std::endl
-		<<".size "<<functionName()<<", .-"<<functionName()<<std::endl;
+	file()<<"ldmfd sp!, {fp, lr, r4, r5, r6, r7, r8, r9, r10, r11}"<<std::endl
+		<<".size "<<fctDefName()<<", .-"<<fctDefName()<<std::endl;
+	unsetFctDef();
 }
 
-Function& CodeGenerator::fct(const std::string& name)
+void CodeGenerator::functionCall(const std::string& name)
 {
-	return *(fctMap()[name]);
+	setFct(name);
+	//TODO
 }
 
-const std::string& CodeGenerator::functionName() const { return fct().name(); }
+void CodeGenerator::setFct(const std::string& name)
+{
+	fct_ = *(fctMap()[name]);
+}
+
+const std::string& CodeGenerator::fctDefName() const { return fctDef().name(); }
+Function& CodeGenerator::fctDef() const { return *fctDef_; }
 Function& CodeGenerator::fct() const { return *fct_; }
 std::map<std::string,Function*>& CodeGenerator::fctMap() { return fctMap_; }
 void CodeGenerator::newFct(std::string name)
 {
-	fct_ = new Function(name);
-	fctMap()[name] = fct_;
+	fctDef_ = new Function(name);
+	fctMap()[name] = fctDef_;
 }
+void CodeGenerator::unsetFctDef() { fctDef_ = NULL; }
+bool CodeGenerator::isFctDef() const { return fctDef_ != NULL; }
 
 
