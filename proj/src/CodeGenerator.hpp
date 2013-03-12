@@ -2,10 +2,9 @@
 #define CODEGENERATOR_HPP_
 
 #include<string>
-#include<fstream>
-#include<map>
 
 class Function;
+class Code;
 
 class CodeGenerator
 {
@@ -20,28 +19,26 @@ public:
 	void endFunction();
 	void functionCall(const std::string&);
 	void var(const std::string&);
+	void integer(const std::string&);
 	void text();
 	void rodata();
+	void data();
+	Code& code() const;
 
 protected:
-	std::ofstream& file();
-	const std::string& filename();
-
+	std::ostringstream& currentCode();
 	const std::string& fctDefName() const;
-	Function& fctDef() const;
+	Function& fct() const;
 	void unsetFctDef();
 	bool isFctDef() const;
 	void setFct(const std::string&);
-	Function& fct() const;
 	void newFct(std::string);
-	std::map<std::string,Function*>& fctMap();
+	bool isGlobal(const std::string&) const;
+	void addGlobal(const std::string&);
 
 private:
-	std::ofstream file_;
-	const std::string filename_;
+	Code& code_;
 	Function* fctDef_;
-	Function* fct_;
-	std::map<std::string,Function*> fctMap_;
 };
 
 #endif /* CODEGENERATOR_HPP_ */

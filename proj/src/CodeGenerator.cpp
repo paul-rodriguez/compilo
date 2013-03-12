@@ -1,77 +1,37 @@
 #include "CodeGenerator.hpp"
+#include "Code.hpp"
 #include "Function.hpp"
 
 CodeGenerator::CodeGenerator(const std::string& filename):
-	file_(),
-	filename_(filename),
-	fctDef_(NULL),
-	fct_(NULL),
-	fctMap_()
+	code_(*(new Code(filename))),
+	fctDef_(NULL)
 {
-	file().open(filename.c_str());
+	;
 }
 
 CodeGenerator::~CodeGenerator()
 {
-	// TODO Auto-generated destructor stub
-}
-
-std::ofstream& CodeGenerator::file()
-{
-	return file_;
-}
-
-const std::string& CodeGenerator::filename()
-{
-	return filename_;
+	delete &code_;
 }
 
 void CodeGenerator::program_header()
 {
-	file()<<".arch armv5te"<<std::endl
-		<<".fpu softvfp"<<std::endl
-		<<".eabi_attribute 20, 1"<<std::endl
-		<<".eabi_attribute 21, 1"<<std::endl
-		<<".eabi_attribute 23, 3"<<std::endl
-		<<".eabi_attribute 24, 1"<<std::endl
-		<<".eabi_attribute 25, 1"<<std::endl
-		<<".eabi_attribute 26, 2"<<std::endl
-		<<".eabi_attribute 30, 6"<<std::endl
-		<<".eabi_attribute 18, 4"<<std::endl
-		<<".file "<<filename()<<std::endl<<std::endl;
+	code().setProgramHeader(true);
 }
 
 void CodeGenerator::endProgram()
 {
-	 file()<<".ident \"GCC: (GNU) 4.6 20120106 (prerelease)\""<<std::endl
-		<<".section .note.GNU-stack,"",%progbits"<<std::endl;
-}
-
-void CodeGenerator::text()
-{
-	file()<<".text"<<std::endl
-		<<".align 2"<<std::endl;
-}
-
-void CodeGenerator::rodata()
-{
-	file()<<"section .rodata"<<std::endl
-		<<".align 2"<<std::endl;
+	 code().write();
 }
 
 void CodeGenerator::function(const std::string& name)
 {
 	newFct(name);
-	file()<<".global "<<fctDefName()<<std::endl
-		<<".type "<<fctDefName()<<", %function"<<std::endl
-		<<fctDefName()<<":"<<std::endl
-		<<"stmfd sp!, {fp, lr, r4, r5, r6, r7, r8, r9, r10, r11}"<<std::endl //save all registers
-		<<"add fp, sp, #36"<<std::endl; //set fp to point to the first stack address this function owns
 }
 
 void CodeGenerator::functionArg(const std::string& name) //arguments above 3 can be loaded from address [fp, #(4*argIndex)] when they are used
 {
-	fctDef().addArg(name);
+	fct().addArg(name);
 	//TODO LocalVariable class
 }
 
@@ -81,50 +41,103 @@ void CodeGenerator::functionArg(const std::string& name) //arguments above 3 can
 
 void CodeGenerator::var(const std::string& name)
 {
-	if(isFctDef())
+	if(isFctDef()) //we are in a function definition
 	{
-		unsigned index = fct().argIndex(name); //erreur possible : variable non definie
-		//TODO verif variable globale
-		if(index < 4)
+		std::ostringstream& o = fct().code();
+		unsigned index = fct().argIndex(name);
+		if(index < fct().argSize()) //this is a function argument
 		{
-			file()<<"mov r4, r"<<index<<std::endl;
+			if(index < 4)
+			{
+				o<<"mov r4, r"<<index<<std::endl;
+			}
+			else
+			{
+				o<<"ldr r4, [fp, #"<<(4*(index-3))<<"]"<<std::endl;
+			}
 		}
-		else
+		else //this is not a function argument
 		{
-			file()<<"ldr r4, [fp, #"<<(4*index)<<"]"<<std::endl;
+			if(!isGlobal(name))
+			{
+				addGlobal(name);
+			}
+			o<<"ldr r4, .globals+"<<code().globalOffset(name)<<std::endl;
 		}
-		file()<<"str r4, [sp, #-4]!"<<std::endl; //push the variable on the stack
+		o<<"str r4, [sp, #-4]!"<<std::endl; //push the variable on the stack
 	}
+	else
+	{
+		if(!isGlobal(name))
+		{
+			addGlobal(name);
+		}
+		currentCode()<<"ldr r4, .globals+"<<code().globalOffset(name)<<std::endl
+			<<"str r4, [sp, #-4]!"<<std::endl; //push the variable on the stack
+	}
+}
+
+void CodeGenerator::integer(const std::string& value)
+{
+	currentCode()<<"mov r0, #1"<<std::endl
+		<<"mov r1, #12"<<std::endl
+		<<"bl calloc(PLT)"<<std::endl
+		<<"mov r4, r0"<<std::endl
+		<<".set r5, "<<value<<std::endl
+		<<"str r5, [r4]"<<std::endl //number = r5
+		<<"mov r5, #3"<<std::endl
+		<<"str r5, [r4, #8]"<<std::endl //type = 3 (INT)
+		<<"str r4, [sp, #-4]!"<<std::endl; //push the variable on the stack
 }
 
 void CodeGenerator::endFunction()
 {
-	file()<<"ldmfd sp!, {fp, lr, r4, r5, r6, r7, r8, r9, r10, r11}"<<std::endl
-		<<".size "<<fctDefName()<<", .-"<<fctDefName()<<std::endl;
 	unsetFctDef();
 }
 
 void CodeGenerator::functionCall(const std::string& name)
 {
-	setFct(name);
 	//TODO
 }
 
-void CodeGenerator::setFct(const std::string& name)
+bool CodeGenerator::isGlobal(const std::string& name) const
 {
-	fct_ = *(fctMap()[name]);
+	return code().isGlobal(name);
 }
 
-const std::string& CodeGenerator::fctDefName() const { return fctDef().name(); }
-Function& CodeGenerator::fctDef() const { return *fctDef_; }
-Function& CodeGenerator::fct() const { return *fct_; }
-std::map<std::string,Function*>& CodeGenerator::fctMap() { return fctMap_; }
+void CodeGenerator::addGlobal(const std::string& name)
+{
+	code().addGlobal(name);
+}
+
+const std::string& CodeGenerator::fctDefName() const { return fct().name(); }
+Function& CodeGenerator::fct() const { return *fctDef_; }
 void CodeGenerator::newFct(std::string name)
 {
 	fctDef_ = new Function(name);
-	fctMap()[name] = fctDef_;
+	code().addFunction(*fctDef_);
 }
 void CodeGenerator::unsetFctDef() { fctDef_ = NULL; }
 bool CodeGenerator::isFctDef() const { return fctDef_ != NULL; }
+
+Code& CodeGenerator::code() const
+{
+	return code_;
+}
+
+std::ostringstream& CodeGenerator::currentCode()
+{
+	Function* fp;
+	if(isFctDef())
+	{
+		fp = (&fct());
+	}
+	else
+	{
+		fp = &(code().main());
+	}
+	return fp->code();
+}
+
 
 

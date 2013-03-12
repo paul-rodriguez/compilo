@@ -2,6 +2,7 @@
 
 Function::Function(const std::string& str):
 	name_(str),
+	code_(),
 	args_()
 {
 	args().reserve(10);
@@ -35,6 +36,7 @@ unsigned Function::argIndex(const std::string& name) const
 	return i;
 }
 
+std::ostringstream& Function::code() { return code_; }
 const std::string& Function::name() const { return name_; }
 unsigned Function::argSize() const { return args().size(); }
 std::vector<std::string>& Function::args() { return args_; }

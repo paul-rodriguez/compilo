@@ -363,6 +363,7 @@ void Parser::simple_expression()
 	else if (isToken(Token::INTEGER))
 	{
 		match(Token::INTEGER);
+		cg().integer(tokValue());
 	}
 	else if (isToken(Token::FLOAT))
 	{

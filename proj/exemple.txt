@@ -4,6 +4,8 @@ sub foo($ag,$a)
 	return 3 + 2 + $ag;
 }
 
+$glob;
+
 
 
 

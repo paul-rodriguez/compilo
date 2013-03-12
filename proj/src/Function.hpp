@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include <sstream>
 
 class Function
 {
@@ -11,6 +12,8 @@ public:
 	virtual ~Function();
 
 	const std::string& name() const;
+	std::ostringstream& code();
+	void setCode(const std::string&);
 
 	unsigned argSize() const;
 	unsigned argIndex(const std::string&) const;
@@ -22,6 +25,7 @@ protected:
 
 private:
 	std::string name_;
+	std::ostringstream code_;
 	std::vector<std::string> args_;
 };
 
