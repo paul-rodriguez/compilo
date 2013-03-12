@@ -3,7 +3,7 @@
 #include "Scanner.hpp"
 #include "CodeGenerator.hpp"
 
-#include<stdexcept>
+#include <stdexcept>
 
 Parser::Parser(Scanner& scanner,CodeGenerator& cg):
 	scanner_(scanner),
