@@ -27,8 +27,9 @@ protected:
 	void error();
 	void error(Token::TokenID tok);
 	void nextToken();
-	const std::string& tokValue() const;
-	void setTokValue(const std::string&);
+	const Token& oldTok() const;
+	void setOldTok(const Token&);
+	const std::string& oldTokValue() const;
 	bool isToken(Token::TokenID) const;
 	bool isToken(const TokenSet&) const;
 
@@ -76,8 +77,7 @@ protected:
 private:
 	Scanner& scanner_;
 	CodeGenerator& cg_;
-	const Token* tok_;
-	std::string tokValue_;
+	const Token* tok_, * oldTok_;
 
 };
 

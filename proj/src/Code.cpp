@@ -1,5 +1,6 @@
 #include "Code.hpp"
 #include "Function.hpp"
+#include <stdlib.h>
 
 Code::Code(const std::string& filename):
 	file_(),
@@ -67,6 +68,10 @@ void Code::writeMain()
 			<<"mov r1, #12"<<std::endl
 			<<"bl calloc(PLT)"<<std::endl
 			<<"str r0, .globals+"<<index*4<<std::endl;
+
+		/*float f = (float) 0;
+		int* p = (int*) (&f);
+		file()<<""<<std::endl*/ // initialiser à 0 les float
 		index++;
 	}
 

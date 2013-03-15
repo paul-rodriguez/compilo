@@ -1,0 +1,21 @@
+#ifndef TYPE_HPP_
+#define TYPE_HPP_
+
+enum Type
+{
+	PLUS,
+	MINUS,
+	GREATER,
+	GREATER_EQUALS,
+	LOWER,
+	LOWER_EQUALS,
+	TIMES,
+	DIVIDE,
+	DIFFERENT,
+	EQUALS,
+	EQ,
+	NE
+};
+
+
+#endif /* TYPE_HPP_ */
