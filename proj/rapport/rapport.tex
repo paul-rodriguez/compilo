@@ -93,15 +93,17 @@
 		    	\hline elsif & \verb@ elsif @ \\
 		    	\hline unless & \verb@ unless @ \\
 		    	\hline return & \verb@ return @ \\
-		    	\hline defined & \verb@ defined @ \\
-		    	\hline int & \verb@ int @ \\
-		    	\hline length & \verb@ length @ \\
-		    	\hline print & \verb@ print @ \\
-		    	\hline scalar & \verb@ scalar @ \\
-		    	\hline substr & \verb@ substr @ \\
 		    	\hline
 		    \end{tabular}
 		\end{center}
+		
+		
+		    	%\hline defined & \verb@ defined @ \\
+		    	%\hline int & \verb@ int @ \\
+		    	%\hline length & \verb@ length @ \\
+		    	%\hline print & \verb@ print @ \\
+		    	%\hline scalar & \verb@ scalar @ \\
+		    	%\hline substr & \verb@ substr @ \\
 	
 	\subsection{Remarques}
 		La syntaxe complète de Perl concernant les noms de variables est beaucoup plus
@@ -133,7 +135,7 @@
 			\node[state,accepting] (10) [left of=2] {int};
 				\path[->] (2) edge node{other} (10);
 				\path[->] (2) edge node {.} (3);
-			\node[state,accepting] (8) [left of=3] {int and .};
+			\node[state,accepting] (8) [left of=3] {error};
 				\path[->] (3) edge node{other} (8);
 			\node[state] (4) [below of=3] {};
 				\path[->] (3) edge node{[0-9]} (4);
@@ -249,6 +251,8 @@
 \newcommand{\varname}[1]{\begin{math}\langle\end{math}#1\begin{math}\rangle\end{math}}
 \newcommand{\num}{\begin{math}[\thecnt]\end{math}\addtocounter{cnt}{1}}
 
+\subsection{Liste des règles}
+
 \begin{longtable}{r l l}
 	\centering
 	\num & \varname{PROGRAM} & $\longrightarrow$ \varname{PROGRAM\_F} \varname{PROGRAM\_V} \\ [+10pt]
@@ -333,60 +337,182 @@
 	\num & & $\longrightarrow$ $\epsilon$ \\
 \end{longtable}
 
-Notes sur la table d'actions : 
-\begin{itemize}
-  \item ``literal'' signifie integer, float ou string
-\end{itemize}
+\newcommand{\eps}{$\epsilon$}
 
+\pagebreak
+
+	\subsection{$First_1$}
+		\small
+		\begin{longtable}{l l l}
+		\varname{PROGRAM}					& : & SUB, RETURN, LBRACE, LPAR, INTEGER, FLOAT, STRING, VAR \\ & & , CALL\_MARK, IF, UNLESS, NOT, PLUS, MINUS \\ [+10pt]
+		\varname{PROGRAM\_V}				& : & SUB, RETURN, LBRACE, LPAR, INTEGER, FLOAT, STRING, VAR \\ & & , CALL\_MARK, IF, UNLESS, NOT, PLUS, MINUS, \eps \\ [+10pt]
+		\varname{PROGRAM\_F}				& : & SUB, RETURN, LBRACE, LPAR, INTEGER, FLOAT, STRING, VAR \\ & & , CALL\_MARK, IF, UNLESS, NOT, PLUS, MINUS \\ [+10pt]
+		\varname{FUNCTION}					& : & SUB \\ [+10pt]
+		\varname{FUNCTION\_ARGUMENT}		& : & LPAR, \eps \\ [+10pt]
+		\varname{ARGUMENT\_LIST}			& : & VAR, \eps \\ [+10pt]
+		\varname{ARGUMENT\_LIST\_V}			& : & COMMA, \eps \\ [+10pt]
+		\varname{INSTRUCTION\_LIST}			& : & RETURN, LBRACE, LPAR, INTEGER, FLOAT, STRING, VAR \\ & & , CALL\_MARK, IF, UNLESS, NOT, PLUS, MINUS, \eps \\ [+10pt]
+		\varname{FUNCTION\_CALL}			& : & CALL\_MARK \\ [+10pt]
+		\varname{ARGUMENT\_CALL\_LIST}		& : & LPAR, INTEGER, FLOAT, STRING, VAR, CALL\_MARK, NOT, PLUS, MINUS, \eps \\ [+10pt]
+		\varname{ARGUMENT\_CALL\_LIST\_V}	& : & COMMA, \eps \\ [+10pt]
+		\varname{INSTRUCTION}				& : & RETURN, LBRACE, LPAR, INTEGER, FLOAT, STRING, VAR \\ & & , CALL\_MARK, IF, UNLESS, NOT, PLUS, MINUS \\ [+10pt]
+		\varname{INSTRUCTION\_F}			& : & IF, UNLESS, \eps \\ [+10pt]
+		\varname{CONDITION}					& : & IF, UNLESS \\ [+10pt]
+		\varname{CONDITION\_END}			& : & ELSIF, ELSE, \eps \\ [+10pt]
+		\varname{EXPRESSION}				& : & LPAR, INTEGER, FLOAT, STRING, VAR, CALL\_MARK, NOT, PLUS, MINUS \\ [+10pt]
+		\varname{EXPRESSION\_V}				& : & ASSIGN\_MARK, \eps \\ [+10pt]
+		\varname{EXPRESSION\_TWO}			& : & LPAR, INTEGER, FLOAT, STRING, VAR, CALL\_MARK, NOT, PLUS, MINUS \\ [+10pt]
+		\varname{EXPRESSION\_TWO\_V}		& : & LAZY\_OR, \eps \\ [+10pt]
+		\varname{EXPRESSION\_THREE}			& : & LPAR, INTEGER, FLOAT, STRING, VAR, CALL\_MARK, NOT, PLUS, MINUS \\ [+10pt]
+		\varname{EXPRESSION\_THREE\_V}		& : & LAZY\_AND, \eps \\ [+10pt]
+		\varname{EXPRESSION\_FOUR}			& : & LPAR, INTEGER, FLOAT, STRING, VAR, CALL\_MARK, NOT, PLUS, MINUS \\ [+10pt]
+		\varname{EXPRESSION\_FOUR\_V}		& : & DIFFERENT, EQ, EQUALS, NE, \eps \\ [+10pt]
+		\varname{EXPRESSION\_FOUR\_F}		& : & DIFFERENT, EQ, EQUALS, NE \\ [+10pt]
+		\varname{EXPRESSION\_FIVE}			& : & LPAR, INTEGER, FLOAT, STRING, VAR, CALL\_MARK, NOT, PLUS, MINUS \\ [+10pt]
+		\varname{EXPRESSION\_FIVE\_V}		& : & GE, GREATER, GREATER\_EQUALS, GT, LE, LOWER, LOWER\_EQUALS, LT, \eps \\ [+10pt]
+		\varname{EXPRESSION\_FIVE\_F}		& : & GE, GREATER, GREATER\_EQUALS, GT, LE, LOWER, LOWER\_EQUALS, LT \\ [+10pt]
+		\varname{EXPRESSION\_SIX}			& : & LPAR, INTEGER, FLOAT, STRING, VAR, CALL\_MARK, NOT, PLUS, MINUS \\ [+10pt]
+		\varname{EXPRESSION\_SIX\_V}		& : & PLUS, MINUS, CONCAT\_MARK, \eps \\ [+10pt]
+		\varname{EXPRESSION\_SIX\_F}		& : & PLUS, MINUS, CONCAT\_MARK \\ [+10pt]
+		\varname{EXPRESSION\_SEVEN}			& : & LPAR, INTEGER, FLOAT, STRING, VAR, CALL\_MARK, NOT, PLUS, MINUS \\ [+10pt]
+		\varname{EXPRESSION\_SEVEN\_V}		& : & TIMES, DIVIDE, \eps \\ [+10pt]
+		\varname{EXPRESSION\_SEVEN\_F}		& : & TIMES, DIVIDE \\ [+10pt]
+		\varname{EXPRESSION\_EIGHT}			& : & LPAR, INTEGER, FLOAT, STRING, VAR, CALL\_MARK, NOT, PLUS, MINUS \\ [+10pt]
+		\varname{EXPRESSION\_EIGHT\_F}		& : & NOT, PLUS, MINUS \\ [+10pt]
+		\varname{EXPRESSION\_NINE}			& : & LPAR, INTEGER, FLOAT, STRING, VAR, CALL\_MARK \\ [+10pt]
+		\varname{SIMPLE\_EXPRESSION}		& : & INTEGER, FLOAT, STRING, VAR, CALL\_MARK \\ [+10pt]
+		\end{longtable}
+		
+	\subsection{$Follow_1$}
+		\small
+		\begin{longtable}{l l l}
+		\varname{PROGRAM}					& : & $\phi$ \\ [+10pt]
+		\varname{PROGRAM\_V}				& : & $\phi$ \\ [+10pt]
+		\varname{PROGRAM\_F}				& : & SUB, RETURN, LBRACE, LPAR, INTEGER, FLOAT, STRING, VAR, \\ & & CALL\_MARK, IF, UNLESS, NOT, PLUS, MINUS \\ [+10pt]
+		\varname{FUNCTION}					& : & SUB, RETURN, LBRACE, LPAR, INTEGER, FLOAT, STRING, VAR, \\ & & CALL\_MARK, IF, UNLESS, NOT, PLUS, MINUS \\ [+10pt]
+		\varname{FUNCTION\_ARGUMENT}		& : & LBRACE \\ [+10pt]
+		\varname{ARGUMENT\_LIST}			& : & RPAR \\ [+10pt]
+		\varname{ARGUMENT\_LIST\_V}			& : & RPAR \\ [+10pt]
+		\varname{INSTRUCTION\_LIST}			& : & RBRACE \\ [+10pt]
+		\varname{FUNCTION\_CALL}			& : & IF, UNLESS, COMMA, LBRACE, RPAR, SEMICOLON, ASSIGN\_MARK, \\ & & LAZY\_OR, LAZY\_AND, DIFFERENT, EQ, EQUALS, NE, GE, GREATER, \\ & & GREATER\_EQUALS, GT, LE, LOWER, LOWER\_EQUALS, LT, \\ & & PLUS, MINUS, CONCAT\_MARK, TIMES, DIVIDE \\ [+10pt]
+		\varname{ARGUMENT\_CALL\_LIST}		& : & RPAR \\ [+10pt]
+		\varname{ARGUMENT\_CALL\_LIST\_V}	& : & RPAR \\ [+10pt]
+		\varname{INSTRUCTION}				& : & RBRACE, SUB, RETURN, LBRACE, LPAR, INTEGER, FLOAT, STRING, VAR, \\ & & CALL\_MARK, IF, UNLESS, NOT, PLUS, MINUS \\ [+10pt]
+		\varname{INSTRUCTION\_F}			& : & SEMICOLON \\ [+10pt]
+		\varname{CONDITION}					& : & LPAR, INTEGER, FLOAT, STRING, VAR, CALL\_MARK,  NOT, PLUS, MINUS \\ [+10pt]
+		\varname{CONDITION\_END}			& : & RBRACE, SUB, RETURN, LBRACE, LPAR, INTEGER, FLOAT, STRING, VAR, \\ & & CALL\_MARK, IF, UNLESS, NOT, PLUS, MINUS \\ [+10pt]
+		\varname{EXPRESSION}				& : & IF, UNLESS, COMMA, LBRACE, RPAR, SEMICOLON \\ [+10pt]
+		\varname{EXPRESSION\_V}				& : & IF, UNLESS, COMMA, LBRACE, RPAR, SEMICOLON \\ [+10pt]
+		\varname{EXPRESSION\_TWO}			& : & IF, UNLESS, COMMA, LBRACE, RPAR, SEMICOLON, ASSIGN\_MARK \\ [+10pt]
+		\varname{EXPRESSION\_TWO\_V}		& : & IF, UNLESS, COMMA, LBRACE, RPAR, SEMICOLON, ASSIGN\_MARK \\ [+10pt]
+		\varname{EXPRESSION\_THREE}			& : & IF, UNLESS, COMMA, LBRACE, RPAR, SEMICOLON, ASSIGN\_MARK, \\ & & LAZY\_OR, LAZY\_AND \\ [+10pt]
+		\varname{EXPRESSION\_THREE\_V}		& : & IF, UNLESS, COMMA, LBRACE, RPAR, SEMICOLON, ASSIGN\_MARK, \\ & & LAZY\_OR, LAZY\_AND \\ [+10pt]
+		\varname{EXPRESSION\_FOUR}			& : & IF, UNLESS, COMMA, LBRACE, RPAR, SEMICOLON, ASSIGN\_MARK, \\ & & LAZY\_OR, LAZY\_AND, DIFFERENT, EQ, EQUALS, NE \\ [+10pt]
+		\varname{EXPRESSION\_FOUR\_V}		& : & IF, UNLESS, COMMA, LBRACE, RPAR, SEMICOLON, ASSIGN\_MARK, \\ & & LAZY\_OR, LAZY\_AND, DIFFERENT, EQ, EQUALS, NE \\ [+10pt]
+		\varname{EXPRESSION\_FOUR\_F}		& : & LPAR, INTEGER, FLOAT, STRING, VAR, CALL\_MARK, NOT, PLUS, MINUS \\ [+10pt]
+		\varname{EXPRESSION\_FIVE}			& : & IF, UNLESS, COMMA, LBRACE, RPAR, SEMICOLON, ASSIGN\_MARK, \\ & & LAZY\_OR, LAZY\_AND, DIFFERENT, EQ, EQUALS, NE, GE, GREATER, \\ & & GREATER\_EQUALS, GT, LE, LOWER, LOWER\_EQUALS, LT \\ [+10pt]
+		\varname{EXPRESSION\_FIVE\_V}		& : & IF, UNLESS, COMMA, LBRACE, RPAR, SEMICOLON, ASSIGN\_MARK, \\ & & LAZY\_OR, LAZY\_AND, DIFFERENT, EQ, EQUALS, NE, GE, GREATER, \\ & & GREATER\_EQUALS, GT, LE, LOWER, LOWER\_EQUALS, LT \\ [+10pt]
+		\varname{EXPRESSION\_FIVE\_F}		& : & LPAR, INTEGER, FLOAT, STRING, VAR, CALL\_MARK, NOT, PLUS, MINUS \\ [+10pt]
+		\varname{EXPRESSION\_SIX}			& : & IF, UNLESS, COMMA, LBRACE, RPAR, SEMICOLON, ASSIGN\_MARK, \\ & & LAZY\_OR, LAZY\_AND, DIFFERENT, EQ, EQUALS, NE, GE, GREATER, \\ & & GREATER\_EQUALS, GT, LE, LOWER, LOWER\_EQUALS, LT, \\ & & PLUS, MINUS, CONCAT\_MARK \\ [+10pt]
+		\varname{EXPRESSION\_SIX\_V}		& : & IF, UNLESS, COMMA, LBRACE, RPAR, SEMICOLON, ASSIGN\_MARK, \\ & & LAZY\_OR, LAZY\_AND, DIFFERENT, EQ, EQUALS, NE, GE, GREATER, \\ & & GREATER\_EQUALS, GT, LE, LOWER, LOWER\_EQUALS, LT, \\ & & PLUS, MINUS, CONCAT\_MARK \\ [+10pt]
+		\varname{EXPRESSION\_SIX\_F}		& : & LPAR, INTEGER, FLOAT, STRING, VAR, CALL\_MARK, NOT, PLUS, MINUS \\ [+10pt]
+		\varname{EXPRESSION\_SEVEN}			& : & IF, UNLESS, COMMA, LBRACE, RPAR, SEMICOLON, ASSIGN\_MARK, \\ & & LAZY\_OR, LAZY\_AND, DIFFERENT, EQ, EQUALS, NE, GE, GREATER, \\ & & GREATER\_EQUALS, GT, LE, LOWER, LOWER\_EQUALS, LT, \\ & & PLUS, MINUS, CONCAT\_MARK, TIMES, DIVIDE \\ [+10pt]
+		\varname{EXPRESSION\_SEVEN\_V}		& : & IF, UNLESS, COMMA, LBRACE, RPAR, SEMICOLON, ASSIGN\_MARK, \\ & & LAZY\_OR, LAZY\_AND, DIFFERENT, EQ, EQUALS, NE, GE, GREATER, \\ & & GREATER\_EQUALS, GT, LE, LOWER, LOWER\_EQUALS, LT, \\ & & PLUS, MINUS, CONCAT\_MARK, TIMES, DIVIDE \\ [+10pt]
+		\varname{EXPRESSION\_SEVEN\_F}		& : & LPAR, INTEGER, FLOAT, STRING, VAR, CALL\_MARK, NOT, PLUS, MINUS \\ [+10pt]
+		\varname{EXPRESSION\_EIGHT}			& : & IF, UNLESS, COMMA, LBRACE, RPAR, SEMICOLON, ASSIGN\_MARK, \\ & & LAZY\_OR, LAZY\_AND, DIFFERENT, EQ, EQUALS, NE, GE, GREATER, \\ & & GREATER\_EQUALS, GT, LE, LOWER, LOWER\_EQUALS, LT, \\ & & PLUS, MINUS, CONCAT\_MARK, TIMES, DIVIDE \\ [+10pt]
+		\varname{EXPRESSION\_EIGHT\_F}		& : & LPAR, INTEGER, FLOAT, STRING, VAR, CALL\_MARK, NOT, PLUS, MINUS \\ [+10pt]
+		\varname{EXPRESSION\_NINE}			& : & IF, UNLESS, COMMA, LBRACE, RPAR, SEMICOLON, ASSIGN\_MARK, \\ & & LAZY\_OR, LAZY\_AND, DIFFERENT, EQ, EQUALS, NE, GE, GREATER, \\ & & GREATER\_EQUALS, GT, LE, LOWER, LOWER\_EQUALS, LT, \\ & & PLUS, MINUS, CONCAT\_MARK, TIMES, DIVIDE \\ [+10pt]
+		\varname{SIMPLE\_EXPRESSION}		& : & IF, UNLESS, COMMA, LBRACE, RPAR, SEMICOLON, ASSIGN\_MARK, \\ & & LAZY\_OR, LAZY\_AND, DIFFERENT, EQ, EQUALS, NE, GE, GREATER, \\ & & GREATER\_EQUALS, GT, LE, LOWER, LOWER\_EQUALS, LT, \\ & & PLUS, MINUS, CONCAT\_MARK, TIMES, DIVIDE \\ [+10pt]
+		\end{longtable}	
+
+\section{Table d'actions}
 
 \newcommand{\g}{$>$}
 \newcommand{\h}{$<$}
+\newcommand{\amp}{$\&$}
+\newcommand{\ddamp}{$\&\&$}
+\newcommand{\vertl}{$\|$}
+\begin{landscape}
+\tabcolsep=0.10cm
+\small
+\begin{longtable}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+\hline									&if	&unless	&else	&elsif 	&sub&return	&=	&\{	&\}	&(	&) 	&,	&;	&\amp 	&\vertl	&\ddamp	&!=	&eq &== &ne &\g	&\g=&gt &ge &\h	&\h=&lt &le \\
+\hline	\varname{PROGRAM}				&1 	&1 		& 		& 		&1	&		&	&1	& 	&1	&1	& 	&	&1		& 		& 		& 	&	&	&	&	&	&	&	&	&	&	&	\\ 
+\hline	\varname{PROGRAM\_V} 			&2 	&2 		& 		& 		&2	&		&	&2	& 	&2	&2	& 	&	&2		& 		& 		& 	&	&	&	&	&	&	&	&	&	&	&	\\ 
+\hline	\varname{PROGRAM\_F}			&5	&5 		& 		& 		&4	&		&	&5 	&5 	&5	&5 	& 	&	&5		& 		& 		& 	&	&	&	&	&	&	&	&	&	&	&	\\ 
+\hline	\varname{FUNCTION} 				&	& 		& 		& 		&6	&		&	& 	& 	&	& 	& 	&	&		& 		& 		& 	&	&	&	&	&	&	&	&	&	&	&	\\ 
+\hline	\varname{FUNCTION\_ARGUMENT} 	&	& 		& 		& 		&	&		&	&8 	& 	&7	& 	& 	&	&		& 		& 		& 	&	&	&	&	&	&	&	&	&	&	&	\\ 
+\hline	\varname{ARGUMENT\_LIST} 		&	& 		& 		& 		&	&		&	& 	& 	&	&10	& 	&	&		& 		& 		& 	&	&	&	&	&	&	&	&	&	&	&	\\ 
+\hline	\varname{ARGUMENT\_LIST\_V} 	&	& 		& 		& 		&	&		&	& 	& 	&	&12	&11	&	&		& 		& 		& 	&	&	&	&	&	&	&	&	&	&	&	\\ 
+\hline	\varname{INSTRUCTION\_LIST} 	&13	&13		& 		& 		&	&13		&	&13	&14	&13	&	&	&	&13		& 		& 		& 	&	&	&	&	&	&	&	&	&	&	&	\\ 
+\hline	\varname{INSTRUCTION} 			&18	&18		& 		& 		&	&16		&	&17	&	&15	&	&	&	&15		& 		& 		& 	&	&	&	&	&	&	&	&	&	&	&	\\ 
+\hline	\varname{INSTRUCTION\_F} 		&19	&19		& 		& 		&	&		&	&	&	&	&	&	&20	&		& 		& 		& 	&	&	&	&	&	&	&	&	&	&	&	\\ 
+\hline	\varname{CONDITION} 			&21	&22		& 		& 		&	&		&	&	&	&	&	&	&	&		& 		& 		& 	&	&	&	&	&	&	&	&	&	&	&	\\ 
+\hline	\varname{CONDITION\_END} 		&	&		&24 	&23		&25	&25		&	&25	&25	&25	&	&	&	&25		& 		& 		& 	&	&	&	&	&	&	&	&	&	&	&	\\ 
+\hline	\varname{SIMPLE\_EXPRESSION} 	&	&		&	 	&		&	&		&	&	&	&	&	&	&	&71		&		&		&	&	&	&	&	&	&	&	&	&	&	&	\\ 
+\hline	\varname{FUNCTION\_CALL} 		&	&		&	 	&		&	&		&	&	&	&	&	&	&	&76		&		&		&	&	&	&	&	&	&	&	&	&	&	&	\\ 
+\hline	\varname{ARGUMENT\_CALL\_LIST} 	&	& 		& 		& 		&	&		&	& 	& 	&77	&78	& 	&	&77		& 		& 		& 	&	&	&	&	&	&	&	&	&	&	&	\\ 
+\hline	\varname{ARGUMENT\_CALL\_LIST\_V} &	& 		& 		& 		&	&		&	& 	& 	&	&80	&79	&	&		& 		& 		& 	&	&	&	&	&	&	&	&	&	&	&	\\ 
+\hline
+\end{longtable}
+\end{landscape}
 
 \begin{landscape}
 \tabcolsep=0.10cm
 \small
-\begin{longtable}{c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c}
-\centering
-								&if	&unless	&else	&elsif 	&sub&return	&=	&\{	&\}	&(	&) 	&,	&;	&\& &\| &\&\& 	&!=	&eq &== &ne &\g	&\g=&gt &ge &\h	&\h=&lt &le &+ 	&- 	&. 	&* 	&/ 	&! 	&id &integer&float	&string	&var\\ \hline
-\varname{PROGRAM}				&1 	&1 		& 		& 		&1	&		&	&1	& 	&1	&1	& 	&	&1	& 	& 		& 	&	&	&	&	&	&	&	&	&	&	&	&1	&1	& 	& 	&	&1	& 	&1		&1		&1		&1	\\ \hline
-\varname{PROGRAM\_V} 			&2 	&2 		& 		& 		&2	&		&	&2	& 	&2	&2	& 	&	&2	& 	& 		& 	&	&	&	&	&	&	&	&	&	&	&	&2	&2	& 	& 	&	&2	& 	&2		&2		&2		&2	\\ \hline
-\varname{PROGRAM\_F}			&5	&5 		& 		& 		&4	&		&	&5 	&5 	&5	&5 	& 	&	&5	& 	& 		& 	&	&	&	&	&	&	&	&	&	&	&	&5 	&5 	& 	& 	&	&5 	& 	&5 		&5 		&5 		&5 	\\ \hline
-\varname{FUNCTION} 				&	& 		& 		& 		&6	&		&	& 	& 	&	& 	& 	&	&	& 	& 		& 	&	&	&	&	&	&	&	&	&	&	&	& 	& 	& 	& 	&	& 	& 	& 		& 		& 		& 	\\ \hline
-\varname{FUNCTION\_ARGUMENT} 	&	& 		& 		& 		&	&		&	&8 	& 	&7	& 	& 	&	&	& 	& 		& 	&	&	&	&	&	&	&	&	&	&	&	& 	& 	& 	& 	&	& 	& 	& 		& 		& 		& 	\\ \hline
-\varname{ARGUMENT\_LIST} 		&	& 		& 		& 		&	&		&	& 	& 	&	&10	& 	&	&	& 	& 		& 	&	&	&	&	&	&	&	&	&	&	&	& 	& 	& 	& 	&	& 	& 	& 		& 		& 		&9 	\\ \hline
-\varname{ARGUMENT\_LIST\_V} 	&	& 		& 		& 		&	&		&	& 	& 	&	&12	&11	&	&	& 	& 		& 	&	&	&	&	&	&	&	&	&	&	&	& 	& 	& 	& 	&	& 	& 	& 		& 		& 		&	\\ \hline
-\varname{INSTRUCTION\_LIST} 	&13	&13		& 		& 		&	&13		&	&13	&14	&13	&	&	&	&13	& 	& 		& 	&	&	&	&	&	&	&	&	&	&	&	&13	&13	& 	& 	&	&13	& 	&13		&13		&13		&13	\\ \hline
-\varname{INSTRUCTION} 			&18	&18		& 		& 		&	&16		&	&17	&	&15	&	&	&	&15	& 	& 		& 	&	&	&	&	&	&	&	&	&	&	&	&15	&15	& 	& 	&	&15	& 	&15		&15		&15		&15	\\ \hline
-\varname{INSTRUCTION\_F} 		&19	&19		& 		& 		&	&		&	&	&	&	&	&	&20	&	& 	& 		& 	&	&	&	&	&	&	&	&	&	&	&	&	&	& 	& 	&	&	& 	&		&		&		&	\\ \hline
-\varname{CONDITION} 			&21	&22		& 		& 		&	&		&	&	&	&	&	&	&	&	& 	& 		& 	&	&	&	&	&	&	&	&	&	&	&	&	&	& 	& 	&	&	& 	&		&		&		&	\\ \hline
-\varname{CONDITION\_END} 		&	&		&24 	&23		&25	&25		&	&25	&25	&25	&	&	&	&25	& 	& 		& 	&	&	&	&	&	&	&	&	&	&	&	&25	&25	& 	& 	&	&25	& 	&25		&25		&25		&25	\\ \hline
-\varname{EXPRESSION} 			&	&		&	 	&		&	&		&	&	&	&26	&	&	&	&26	& 	& 		& 	&	&	&	&	&	&	&	&	&	&	&	&26	&26	& 	& 	&	&26	& 	&26		&26		&26		&26	\\ \hline
-\varname{EXPRESSION\_V} 		&28	&28		&	 	&		&	&		&27	&28	&	&	&28	&28	&28	&	& 	& 		& 	&	&	&	&	&	&	&	&	&	&	&	&	&	& 	& 	&	&	& 	&		&		&		&	\\ \hline
-\varname{EXPRESSION\_TWO} 		&	&		&	 	&		&	&		&	&	&	&29	&	&	&	&29	& 	& 		& 	&	&	&	&	&	&	&	&	&	&	&	&29	&29	& 	& 	&	&29	& 	&29		&29		&29		&29	\\ \hline
-\varname{EXPRESSION\_TWO\_V} 	&31	&31		&	 	&		&	&		&31	&31	&	&	&31	&31	&31	&	&30	& 		& 	&	&	&	&	&	&	&	&	&	&	&	&	&	& 	& 	&	&	& 	&		&		&		&	\\ \hline
-\varname{EXPRESSION\_THREE} 	&	&		&	 	&		&	&		&	&	&	&32	&	&	&	&32	& 	& 		& 	&	&	&	&	&	&	&	&	&	&	&	&32	&32	& 	& 	&	&32	& 	&32		&32		&32		&32	\\ \hline
-\varname{EXPRESSION\_THREE\_V} 	&34	&34		&	 	&		&	&		&34	&34	&	&	&34	&34	&34	&	&34	&33		& 	&	&	&	&	&	&	&	&	&	&	&	&	&	& 	& 	&	&	& 	&		&		&		&	\\ \hline
-\varname{EXPRESSION\_FOUR} 		&	&		&	 	&		&	&		&	&	&	&35	&	&	&	&35	& 	& 		& 	&	&	&	&	&	&	&	&	&	&	&	&35	&35	& 	& 	&	&35	& 	&35		&35		&35		&35	\\ \hline
-\varname{EXPRESSION\_FOUR\_V} 	&37	&37		&	 	&		&	&		&37	&37	&	&	&37	&37	&37	&	&37	&37		&36	&36	&36	&36	&	&	&	&	&	&	&	&	&	&	& 	& 	&	&	& 	&		&		&		&	\\ \hline
-\varname{EXPRESSION\_FOUR\_F} 	&	&		&	 	&		&	&		&	&	&	&	&	&	&	&	&	&		&38	&39	&40	&41	&	&	&	&	&	&	&	&	&	&	& 	& 	&	&	& 	&		&		&		&	\\ \hline
-\varname{EXPRESSION\_FIVE} 		&	&		&	 	&		&	&		&	&	&	&42	&	&	&	&42	& 	& 		& 	&	&	&	&	&	&	&	&	&	&	&	&42	&42	& 	& 	&	&42	& 	&42		&42		&42		&42	\\ \hline
-\varname{EXPRESSION\_FIVE\_V} 	&44	&44		&	 	&		&	&		&44	&44	&	&	&44	&44	&44	&	&44	&44		&44	&44	&44	&44	&43	&43	&43	&43	&43	&43	&43	&43	&	&	& 	& 	&	&	& 	&		&		&		&	\\ \hline
-\varname{EXPRESSION\_FIVE\_F} 	&	&		&	 	&		&	&		&	&	&	&	&	&	&	&	&	&		&	&	&	&	&45	&46	&47	&48	&49	&50	&51	&52	&	&	& 	& 	&	&	& 	&		&		&		&	\\ \hline
-\varname{EXPRESSION\_SIX} 		&	&		&	 	&		&	&		&	&	&	&53	&	&	&	&53	& 	& 		& 	&	&	&	&	&	&	&	&	&	&	&	&53	&53	& 	& 	&	&53	& 	&53		&53		&53		&53	\\ \hline
-\varname{EXPRESSION\_SIX\_V} 	&55	&55		&	 	&		&	&		&55	&55	&	&	&55	&55	&55	&	&55	&55		&55	&55	&55	&55	&55	&55	&55	&55	&55	&55	&55	&55	&54	&54	&54	& 	&	&	& 	&		&		&		&	\\ \hline
-\varname{EXPRESSION\_SIX\_F} 	&	&		&	 	&		&	&		&	&	&	&	&	&	&	&	&	&		&	&	&	&	&	&	&	&	&	&	&	&	&56	&57	&58	& 	&	&	& 	&		&		&		&	\\ \hline
-\varname{EXPRESSION\_SEVEN} 	&	&		&	 	&		&	&		&	&	&	&59	&	&	&	&59	& 	& 		& 	&	&	&	&	&	&	&	&	&	&	&	&59	&59	& 	& 	&	&59	& 	&59		&59		&59		&59	\\ \hline
-\varname{EXPRESSION\_SEVEN\_V} 	&61	&61		&	 	&		&	&		&61	&61	&	&	&61	&61	&61	&	&61	&61		&61	&61	&61	&61	&61	&61	&61	&61	&61	&61	&61	&61	&61	&61	&61	&60	&60	&	& 	&		&		&		&	\\ \hline
-\varname{EXPRESSION\_SEVEN\_F} 	&	&		&	 	&		&	&		&	&	&	&	&	&	&	&	&	&		&	&	&	&	&	&	&	&	&	&	&	&	&	&	&	&62	&63	&	& 	&		&		&		&	\\ \hline
-\varname{EXPRESSION\_EIGHT} 	&	&		&	 	&		&	&		&	&	&	&64	&	&	&	&64	&	&		&	&	&	&	&	&	&	&	&	&	&	&	&65	&65	&	&	&	&65	& 	&64		&64		&64		&64	\\ \hline
-\varname{EXPRESSION\_EIGHT\_F} 	&	&		&	 	&		&	&		&	&	&	&	&	&	&	&	&	&		&	&	&	&	&	&	&	&	&	&	&	&	&68	&67	&	&	&	&66	& 	&		&		&		&	\\ \hline
-\varname{EXPRESSION\_NINE} 		&	&		&	 	&		&	&		&	&	&	&69	&	&	&	&70	&	&		&	&	&	&	&	&	&	&	&	&	&	&	&	&	&	&	&	&	& 	&70		&70		&70		&70	\\ \hline
-\varname{SIMPLE\_EXPRESSION} 	&	&		&	 	&		&	&		&	&	&	&	&	&	&	&71	&	&		&	&	&	&	&	&	&	&	&	&	&	&	&	&	&	&	&	&	& 	&72		&73		&74		&75	\\ \hline
-\varname{FUNCTION\_CALL} 		&	&		&	 	&		&	&		&	&	&	&	&	&	&	&76	&	&		&	&	&	&	&	&	&	&	&	&	&	&	&	&	&	&	&	&	& 	&		&		&		&	\\ \hline
-\varname{ARGUMENT\_CALL\_LIST} 	&	& 		& 		& 		&	&		&	& 	& 	&77	&78	& 	&	&77	& 	& 		& 	&	&	&	&	&	&	&	&	&	&	&	&77 &77	& 	& 	&	&77	& 	&77		&77		&77		&77	\\ \hline
-\varname{ARGUMENT\_CALL\_LIST\_V} &	& 		& 		& 		&	&		&	& 	& 	&	&80	&79	&	&	& 	& 		& 	&	&	&	&	&	&	&	&	&	&	&	& 	& 	& 	& 	&	& 	& 	& 		& 		& 		&	\\ \hline
+\begin{longtable}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+\hline									&if	&unless	&else	&elsif 	&sub&return	&=	&\{	&\}	&(	&) 	&,	&;	&\amp 	&\vertl	&\ddamp &!=	&eq &== &ne &\g	&\g=&gt &ge &\h	&\h=&lt &le \\
+\hline	\varname{EXPRESSION} 			&	&		&	 	&		&	&		&	&	&	&26	&	&	&	&26		& 		& 		& 	&	&	&	&	&	&	&	&	&	&	&	\\
+\hline	\varname{EXPRESSION\_V} 		&28	&28		&	 	&		&	&		&27	&28	&	&	&28	&28	&28	&		& 		& 		& 	&	&	&	&	&	&	&	&	&	&	&	\\
+\hline	\varname{EXPRESSION\_TWO} 		&	&		&	 	&		&	&		&	&	&	&29	&	&	&	&29		& 		& 		& 	&	&	&	&	&	&	&	&	&	&	&	\\
+\hline	\varname{EXPRESSION\_TWO\_V} 	&31	&31		&	 	&		&	&		&31	&31	&	&	&31	&31	&31	&		&30		& 		& 	&	&	&	&	&	&	&	&	&	&	&	\\
+\hline	\varname{EXPRESSION\_THREE} 	&	&		&	 	&		&	&		&	&	&	&32	&	&	&	&32		& 		& 		& 	&	&	&	&	&	&	&	&	&	&	&	\\
+\hline	\varname{EXPRESSION\_THREE\_V} 	&34	&34		&	 	&		&	&		&34	&34	&	&	&34	&34	&34	&		&34		&33		& 	&	&	&	&	&	&	&	&	&	&	&	\\
+\hline	\varname{EXPRESSION\_FOUR} 		&	&		&	 	&		&	&		&	&	&	&35	&	&	&	&35		& 		& 		& 	&	&	&	&	&	&	&	&	&	&	&	\\
+\hline	\varname{EXPRESSION\_FOUR\_V} 	&37	&37		&	 	&		&	&		&37	&37	&	&	&37	&37	&37	&		&37		&37		&36	&36	&36	&36	&	&	&	&	&	&	&	&	\\
+\hline	\varname{EXPRESSION\_FOUR\_F} 	&	&		&	 	&		&	&		&	&	&	&	&	&	&	&		&		&		&38	&39	&40	&41	&	&	&	&	&	&	&	&	\\
+\hline	\varname{EXPRESSION\_FIVE} 		&	&		&	 	&		&	&		&	&	&	&42	&	&	&	&42		& 		& 		& 	&	&	&	&	&	&	&	&	&	&	&	\\
+\hline	\varname{EXPRESSION\_FIVE\_V} 	&44	&44		&	 	&		&	&		&44	&44	&	&	&44	&44	&44	&		&44		&44		&44	&44	&44	&44	&43	&43	&43	&43	&43	&43	&43	&43	\\
+\hline	\varname{EXPRESSION\_FIVE\_F} 	&	&		&	 	&		&	&		&	&	&	&	&	&	&	&		&		&		&	&	&	&	&45	&46	&47	&48	&49	&50	&51	&52	\\
+\hline	\varname{EXPRESSION\_SIX} 		&	&		&	 	&		&	&		&	&	&	&53	&	&	&	&53		& 		& 		& 	&	&	&	&	&	&	&	&	&	&	&	\\
+\hline	\varname{EXPRESSION\_SIX\_V} 	&55	&55		&	 	&		&	&		&55	&55	&	&	&55	&55	&55	&		&55		&55		&55	&55	&55	&55	&55	&55	&55	&55	&55	&55	&55	&55	\\
+\hline	\varname{EXPRESSION\_SIX\_F} 	&	&		&	 	&		&	&		&	&	&	&	&	&	&	&		&		&		&	&	&	&	&	&	&	&	&	&	&	&	\\
+\hline	\varname{EXPRESSION\_SEVEN} 	&	&		&	 	&		&	&		&	&	&	&59	&	&	&	&59		& 		& 		& 	&	&	&	&	&	&	&	&	&	&	&	\\
+\hline	\varname{EXPRESSION\_SEVEN\_V} 	&61	&61		&	 	&		&	&		&61	&61	&	&	&61	&61	&61	&		&61		&61		&61	&61	&61	&61	&61	&61	&61	&61	&61	&61	&61	&61	\\
+\hline	\varname{EXPRESSION\_SEVEN\_F} 	&	&		&	 	&		&	&		&	&	&	&	&	&	&	&		&		&		&	&	&	&	&	&	&	&	&	&	&	&	\\
+\hline	\varname{EXPRESSION\_EIGHT} 	&	&		&	 	&		&	&		&	&	&	&64	&	&	&	&64		&		&		&	&	&	&	&	&	&	&	&	&	&	&	\\
+\hline	\varname{EXPRESSION\_EIGHT\_F} 	&	&		&	 	&		&	&		&	&	&	&	&	&	&	&		&		&		&	&	&	&	&	&	&	&	&	&	&	&	\\
+\hline	\varname{EXPRESSION\_NINE} 		&	&		&	 	&		&	&		&	&	&	&69	&	&	&	&70		&		&		&	&	&	&	&	&	&	&	&	&	&	&	\\
+\hline
 \end{longtable}
 \end{landscape}
+
+\begin{landscape}
+\tabcolsep=0.10cm
+\small
+\begin{longtable}{|c|c|c|c|c|c|c|c|c|c|c|c|}			
+\hline									&+ 	&- 	&. 	&* 	&/ 	&! 	&id &integer&float	&string	&var\\
+\hline	\varname{PROGRAM}				&1	&1	& 	& 	&	&1	& 	&1		&1		&1		&1	\\
+\hline	\varname{PROGRAM\_V} 			&2	&2	& 	& 	&	&2	& 	&2		&2		&2		&2	\\
+\hline	\varname{PROGRAM\_F}            &5 	&5 	& 	& 	&	&5 	& 	&5 		&5 		&5 		&5 	\\
+\hline	\varname{FUNCTION} 				& 	& 	& 	& 	&	& 	& 	& 		& 		& 		& 	\\
+\hline	\varname{FUNCTION\_ARGUMENT} 	& 	& 	& 	& 	&	& 	& 	& 		& 		& 		& 	\\\hline	\varname{ARGUMENT\_LIST} 		& 	& 	& 	& 	&	& 	& 	& 		& 		& 		&9 	\\\hline	\varname{ARGUMENT\_LIST\_V} 	& 	& 	& 	& 	&	& 	& 	& 		& 		& 		&	\\\hline	\varname{INSTRUCTION\_LIST} 	&13	&13	& 	& 	&	&13	& 	&13		&13		&13		&13	\\\hline	\varname{INSTRUCTION} 			&15	&15	& 	& 	&	&15	& 	&15		&15		&15		&15	\\\hline	\varname{INSTRUCTION\_F} 		&	&	& 	& 	&	&	& 	&		&		&		&	\\\hline	\varname{CONDITION} 			&	&	& 	& 	&	&	& 	&		&		&		&	\\\hline	\varname{CONDITION\_END} 		&25	&25	& 	& 	&	&25	& 	&25		&25		&25		&25	\\
+\hline	\varname{SIMPLE\_EXPRESSION} 	&	&	&	&	&	&	& 	&72		&73		&74		&75	\\
+\hline	\varname{FUNCTION\_CALL} 		&	&	&	&	&	&	& 	&		&		&		&	\\
+\hline	\varname{ARGUMENT\_CALL\_LIST} 	&77 &77	& 	& 	&	&77	& 	&77		&77		&77		&77	\\
+\hline	\varname{ARGUMENT\_CALL\_LIST\_V}& 	& 	& 	& 	&	& 	& 	& 		& 		& 		&	\\
+\hline
+\end{longtable}                 
+\end{landscape}
+
+
+\begin{landscape}
+\begin{longtable}{|c|c|c|c|c|c|c|c|c|c|c|c|}				
+\hline									&+ 	&- 	&. 	&* 	&/ 	&! 	&id &integer&float	&string	&var\\\hline	\varname{EXPRESSION} 			&26	&26	& 	& 	&	&26	& 	&26		&26		&26		&26	\\\hline	\varname{EXPRESSION\_V} 		&	&	& 	& 	&	&	& 	&		&		&		&	\\\hline	\varname{EXPRESSION\_TWO} 		&29	&29	& 	& 	&	&29	& 	&29		&29		&29		&29	\\\hline	\varname{EXPRESSION\_TWO\_V} 	&	&	& 	& 	&	&	& 	&		&		&		&	\\\hline	\varname{EXPRESSION\_THREE} 	&32	&32	& 	& 	&	&32	& 	&32		&32		&32		&32	\\\hline	\varname{EXPRESSION\_THREE\_V} 	&	&	& 	& 	&	&	& 	&		&		&		&	\\\hline	\varname{EXPRESSION\_FOUR} 		&35	&35	& 	& 	&	&35	& 	&35		&35		&35		&35	\\\hline	\varname{EXPRESSION\_FOUR\_V} 	&	&	& 	& 	&	&	& 	&		&		&		&	\\\hline	\varname{EXPRESSION\_FOUR\_F} 	&	&	& 	& 	&	&	& 	&		&		&		&	\\\hline	\varname{EXPRESSION\_FIVE} 		&42	&42	& 	& 	&	&42	& 	&42		&42		&42		&42	\\\hline	\varname{EXPRESSION\_FIVE\_V} 	&	&	& 	& 	&	&	& 	&		&		&		&	\\\hline	\varname{EXPRESSION\_FIVE\_F} 	&	&	& 	& 	&	&	& 	&		&		&		&	\\\hline	\varname{EXPRESSION\_SIX} 		&53	&53	& 	& 	&	&53	& 	&53		&53		&53		&53	\\\hline	\varname{EXPRESSION\_SIX\_V} 	&54	&54	&54	& 	&	&	& 	&		&		&		&	\\\hline	\varname{EXPRESSION\_SIX\_F} 	&56	&57	&58	& 	&	&	& 	&		&		&		&	\\\hline	\varname{EXPRESSION\_SEVEN} 	&59	&59	& 	& 	&	&59	& 	&59		&59		&59		&59	\\\hline	\varname{EXPRESSION\_SEVEN\_V} 	&61	&61	&61	&60	&60	&	& 	&		&		&		&	\\\hline	\varname{EXPRESSION\_SEVEN\_F} 	&	&	&	&62	&63	&	& 	&		&		&		&	\\\hline	\varname{EXPRESSION\_EIGHT} 	&65	&65	&	&	&	&65	& 	&64		&64		&64		&64	\\\hline	\varname{EXPRESSION\_EIGHT\_F} 	&68	&67	&	&	&	&66	& 	&		&		&		&	\\\hline	\varname{EXPRESSION\_NINE} 		&	&	&	&	&	&	& 	&70		&70		&70		&70	\\
+\hline
+\end{longtable}                 
+\end{landscape}
+
 
 remarques : 
 1) on a enlevé la possibilité d'omettre les () autour des listes d'arguments a
@@ -399,8 +525,8 @@ non-LL(1), le follow de expression prend le follow de toutes les expressions
 3) La grammaire autorise l'assignation de n'importe quelle expression a une
 autre, c'est lors de l'analyse semantique qu'on determine ce qui est lvalue
 
-
-
-!!!!changer code expression_8 !!!
+4) On ne respecte pas les specificités du genre ``0 but true''
 
 \end{document}
+
+!!!!changer code expression_8 !!!
