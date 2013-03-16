@@ -23,6 +23,7 @@ public:
 	void integer(const std::string& value);
 	void Float(const std::string& value);
 	void string(const std::string& value);
+	void assign_mark();
 	void unary_plus();
 	void unary_minus();
 	void Not();
@@ -61,6 +62,8 @@ protected:
 	void addGlobal(const std::string&);
 	void Operator(Type);
 	void calloc();
+	void calloc(unsigned size);
+	void strCpy(const std::string& destination, const std::string& source);
 	void pushStack();
 	void pushStackScalar(const std::string&, unsigned);
 	void startOperator();

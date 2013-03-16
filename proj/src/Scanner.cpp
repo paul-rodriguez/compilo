@@ -17,6 +17,8 @@ Scanner::~Scanner()
 	;
 }
 
+//TODO : error if unrecognised character (like " )
+
 const Token& Scanner::nextToken()
 {
 	if (!file.is_open())

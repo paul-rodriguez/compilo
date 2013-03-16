@@ -1,6 +1,6 @@
 sub foo($ag,$a)
 {
-	$a = 3;
+	$a = 'hahaha';
 	return 3 + 2 + $ag;
 }
 

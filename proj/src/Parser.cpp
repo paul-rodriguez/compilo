@@ -8,7 +8,8 @@
 Parser::Parser(Scanner& scanner, CodeGenerator& cg):
 	scanner_(scanner),
 	cg_(cg),
-	tok_(NULL)
+	tok_(NULL),
+	oldTok_(NULL)
 {
 	;
 }
@@ -483,7 +484,10 @@ void Parser::run()
 
 void Parser::match()
 {
-	delete oldTok_;
+	if(oldTok_ != NULL)
+	{
+		delete oldTok_;
+	}
 	setOldTok(tok());
 	nextToken();
 }
