@@ -58,7 +58,7 @@ void Code::writeMain()
 	file()<<".global "<<name<<std::endl
 		<<".type "<<name<<", %function"<<std::endl
 		<<name<<":"<<std::endl
-		<<"stmfd sp!, {r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11, fp, lr}"<<std::endl //save all registers
+		<<"stmfd sp!, {r4, r5, r6, r7, r8, r9, r10, r11, fp, lr}"<<std::endl //save all registers
 		<<"add fp, sp, #48"<<std::endl; //set fp to point to the first stack address this function owns
 
 	unsigned index=0;
@@ -85,7 +85,7 @@ void Code::writeMain()
 		index++;
 	}
 
-	file()<<"ldmfd sp!, {r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11, fp, pc}"<<std::endl //load back all registers and set current pc to the saved lr
+	file()<<"ldmfd sp!, {r4, r5, r6, r7, r8, r9, r10, r11, fp, pc}"<<std::endl //load back all registers and set current pc to the saved lr
 		<<".size "<<name<<", .-"<<name<<std::endl;
 }
 
@@ -95,10 +95,10 @@ void Code::function(Function& f)
 	file()<<".global "<<name<<std::endl
 		<<".type "<<name<<", %function"<<std::endl
 		<<name<<":"<<std::endl
-		<<"stmfd sp!, {r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11, fp, lr}"<<std::endl //save all registers
+		<<"stmfd sp!, {r4, r5, r6, r7, r8, r9, r10, r11, fp, lr}"<<std::endl //save all registers
 		<<"add fp, sp, #48"<<std::endl //set fp to point to the first stack address this function owns
 		<<f.code().str()
-		<<"ldmfd sp!, {r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11, fp, pc}"<<std::endl //load back all registers and set current pc to the saved lr
+		<<"ldmfd sp!, {r4, r5, r6, r7, r8, r9, r10, r11, fp, pc}"<<std::endl //load back all registers and set current pc to the saved lr
 		<<".size "<<name<<", .-"<<name<<std::endl;
 }
 

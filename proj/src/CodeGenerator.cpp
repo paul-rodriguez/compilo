@@ -91,7 +91,12 @@ void CodeGenerator::pushStackScalar(const std::string& value, unsigned type)
 	calloc();
 	float f = (float) atof(value.c_str());
 	int* p = (int*) (&f);
-	currentCode()<<"mov r5, "<<*p<<std::endl
+	rodata();
+	std::string roScalarLabel = nextLabel();
+	currentCode()<<roScalarLabel<<":"<<std::endl
+			<<".word "<<*p<<std::endl;
+	text();
+	currentCode()<<"mov r5, "<<roScalarLabel<<std::endl
 		<<"str r5, [r9]"<<std::endl
 		<<"mov r5, #"<<type<<std::endl;
 	pushStack();
