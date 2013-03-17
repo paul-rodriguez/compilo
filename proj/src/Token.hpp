@@ -30,7 +30,6 @@ class Token
 			TIMES,
 			DIVIDE,
 			NOT,
-			NOTLETTERS,
 			LAZY_AND,
 			LAZY_OR,
 			EQUALS,
@@ -54,12 +53,6 @@ class Token
 			ELSIF,
 			UNLESS,
 			RETURN,
-			DEFINED,
-			INT,
-			LENGTH,
-			PRINT,
-			SCALAR,
-			SUBSTR
 		};
 
 		Token(TokenID = END, string = string());

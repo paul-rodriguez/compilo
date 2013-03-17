@@ -415,19 +415,6 @@ void Scanner::identifier_ne_notletters()
 	{
 		commonTokenEnd(Token::NE);
 	}
-	else if (character == 'o')
-	{
-		identifier_notletters();
-	}
-}
-
-void Scanner::identifier_notletters()
-{
-	nextCharacter();
-	if (character == 't')
-	{
-		commonTokenEnd(Token::NOTLETTERS);
-	}
 }
 
 void Scanner::lazyOr()
@@ -549,7 +536,8 @@ void Scanner::identifier_length()
 			nextCharacter();
 			if (character == 'h')
 			{
-				commonTokenEnd(Token::LENGTH);
+				commonTokenEnd(Token::IDENTIFIER);
+				token.setValue("length");
 			}
 		}
 	}
@@ -609,7 +597,8 @@ void Scanner::identifier_scalar()
 				nextCharacter();
 				if (character == 'r')
 				{
-					commonTokenEnd(Token::SCALAR);
+					commonTokenEnd(Token::IDENTIFIER);
+					token.setValue("scalar");
 				}
 			}
 		}
