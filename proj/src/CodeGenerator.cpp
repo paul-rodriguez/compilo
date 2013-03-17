@@ -341,7 +341,6 @@ void CodeGenerator::strCpy(const std::string& destination, const std::string& so
 	currentCode()<<"stmfd sp!, {r0, r1}"<<std::endl
 			<<"mov r0, "<<destination<<std::endl
 			<<"ldr r1, ="<<source<<std::endl
-			<<"ldr r1, [r1]"<<std::endl
 			<<"bl strcpy(PLT)"<<std::endl
 			<<"ldmfd sp!, {r0, r1}"<<std::endl;
 }

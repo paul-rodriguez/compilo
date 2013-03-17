@@ -140,6 +140,7 @@ void Parser::instruction()
 		expression();
 		instruction_f();
 		match(Token::SEMICOLON);
+		cg().pop();
 	}
 	else
 	{
@@ -381,15 +382,16 @@ void Parser::expression_six_v()
 	if(isToken(TokenSet::f_expression_six_v))
 	{
 		match();
+		Token::TokenID id = oldTok().id();
 		expression_seven();
-		if (oldTok().id() == Token::PLUS)
+		if (id == Token::PLUS)
 		{
 			if(!ignore_)
 			{
 				cg().plus();
 			}
 		}
-		else if (oldTok().id() == Token::MINUS)
+		else if (id == Token::MINUS)
 		{
 			if(!ignore_)
 			{

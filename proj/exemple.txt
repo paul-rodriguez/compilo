@@ -1,2 +1,2 @@
 
-&print(&length(3));
+&print(&length('Bonjour'));

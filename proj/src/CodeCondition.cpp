@@ -59,7 +59,7 @@ std::ostringstream& CodeCondition::elseBlock()
 	return *elseBlock_;
 }
 
-const std::string& CodeCondition::write() const
+std::string CodeCondition::write() const
 {
 	std::ostringstream o;
 	o<<if_->str();
