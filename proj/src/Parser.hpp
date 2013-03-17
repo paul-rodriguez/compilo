@@ -32,6 +32,7 @@ protected:
 	const std::string& oldTokValue() const;
 	bool isToken(Token::TokenID) const;
 	bool isToken(const TokenSet&) const;
+	void setIgnore(bool);
 
 	void program();
 	void program_f();
@@ -78,6 +79,7 @@ private:
 	Scanner& scanner_;
 	CodeGenerator& cg_;
 	const Token* tok_, * oldTok_;
+	bool ignore_;
 
 };
 

@@ -1,5 +1,6 @@
 #include "CodeGenerator.hpp"
 #include "Code.hpp"
+#include "CodeCondition.hpp"
 #include "Function.hpp"
 #include <stdlib.h>
 
@@ -9,7 +10,9 @@ CodeGenerator::CodeGenerator(const std::string& filename):
 	code_(*(new Code(filename))),
 	fctDef_(NULL),
 	label_(0),
-	argumentIndex_(0)
+	argumentIndex_(0),
+	condIndex_(0),
+	condCode_(NULL)
 {
 	;
 }
@@ -236,11 +239,12 @@ void CodeGenerator::Operator(Type type)
 		currentCode()<<"cmp r5, #1"<<std::endl
 		<<"bne "<<firstLabel<<std::endl
 		<<"ldr r5, [r4, #4]"<<std::endl
-		<<"str r0, [sp, #-4]"<<std::endl
+		<<"str r0, [sp, #-4]!"<<std::endl
 		<<"mov r0, r5"<<std::endl
 		<<"bl atof(PLT)"<<std::endl
 		<<"mov r5, r0"<<std::endl
-		<<"ldr r0, [sp, #-4]"<<std::endl
+		<<"ldr r0, [sp]"<<std::endl
+		<<"add sp, sp, #4"<<std::endl
 		<<"b "<<secondLabel<<std::endl
 		<<firstLabel<<":"<<std::endl
 		<<"ldr r5, [r4]"<<std::endl
@@ -248,11 +252,12 @@ void CodeGenerator::Operator(Type type)
 		<<"cmp r7, #1"<<std::endl
 		<<"bne "<<thirdLabel<<std::endl
 		<<"ldr r7, [r6, #4]"<<std::endl
-		<<"str r0, [sp, #-4]"<<std::endl
+		<<"str r0, [sp, #-4]!"<<std::endl
 		<<"mov r0, r7"<<std::endl
 		<<"bl atof(PLT)"<<std::endl
 		<<"mov r7, r0"<<std::endl
-		<<"ldr r0, [sp, #-4]"<<std::endl
+		<<"ldr r0, [sp]"<<std::endl
+		<<"add sp, sp, #4"<<std::endl
 		<<"b "<<fourthLabel<<std::endl
 		<<thirdLabel<<":"<<std::endl
 		<<"ldr r7, [r6]"<<std::endl
@@ -372,6 +377,37 @@ void CodeGenerator::pop()
 	currentCode()<<"add sp, sp, #4"<<std::endl;
 }
 
+void CodeGenerator::beginIf()
+{
+	CodeCondition *cp = new CodeCondition(condIndex_,0);
+	cond_.push(cp);
+	condCode_ = &(cp->ifCond());
+	condIndex_++;
+}
+
+void CodeGenerator::beginUnless()
+{
+	CodeCondition *cp = new CodeCondition(condIndex_,1);
+	cond_.push(cp);
+	condCode_ = &(cp->ifCond());
+	condIndex_++;
+}
+
+void CodeGenerator::beginIfBlock()
+{
+	CodeCondition *cp = cond_.top();
+	condCode_ = &(cp->ifBlock());
+}
+
+void CodeGenerator::endCond()
+{
+	CodeCondition *cp = cond_.top();
+	cond_.pop();
+	currentCode()<<cp->write();
+	condCode_ = &(cp->code());
+	delete cp;
+}
+
 std::string CodeGenerator::nextLabel()
 {
 	std::ostringstream res;
@@ -423,17 +459,22 @@ Code& CodeGenerator::code() const
 
 std::ostringstream& CodeGenerator::currentCode()
 {
-	Function* fp;
-	if(isFctDef())
+	if(cond_.empty())
 	{
-		fp = (&fct());
+		Function* fp;
+		if(isFctDef())
+		{
+			fp = (&fct());
+		}
+		else
+		{
+			fp = &(code().main());
+		}
+		return fp->code();
 	}
 	else
 	{
-		fp = &(code().main());
+		return *condCode_;
 	}
-	return fp->code();
 }
-
-
 

@@ -186,7 +186,7 @@ void Code::writeMain()
 		<<".type "<<name<<", %function"<<std::endl
 		<<name<<":"<<std::endl
 		<<"stmfd sp!, {r4, r5, r6, r7, r8, r9, r10, fp, lr}"<<std::endl //save all registers
-		<<"add fp, sp, #36"<<std::endl; //set fp to point to the first stack address this function owns
+		<<"add fp, sp, #32"<<std::endl; //set fp to point to the first stack address this function owns
 
 	file()<<"ldr r9, =.globals"<<std::endl;
 
@@ -227,7 +227,7 @@ void Code::function(Function& f)
 		<<".type "<<name<<", %function"<<std::endl
 		<<name<<":"<<std::endl
 		<<"stmfd sp!, {r4, r5, r6, r7, r8, r9, r10, fp, lr}"<<std::endl //save all registers
-		<<"add fp, sp, #36"<<std::endl //set fp to point to the first stack address this function owns
+		<<"add fp, sp, #32"<<std::endl //set fp to point to the first stack address this function owns
 		<<f.code().str()
 		<<"ldmfd sp!, {r4, r5, r6, r7, r8, r9, r10, fp, pc}"<<std::endl //load back all registers and set current pc to the saved lr
 		<<f.afterReturn().str()
