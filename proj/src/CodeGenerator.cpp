@@ -118,10 +118,15 @@ void CodeGenerator::unary_plus()
 
 void CodeGenerator::unary_minus()
 {
-
+	;
 }
 
 void CodeGenerator::Not()
+{
+	;
+}
+
+void CodeGenerator::assign_mark()
 {
 
 }
