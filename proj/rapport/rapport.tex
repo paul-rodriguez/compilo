@@ -243,7 +243,7 @@
 		d'autres nécessitent la lecture du caractère suivant le dernier (par exemple, pour terminer un entier il faut lire autre chose qu'un chiffre).
 		Dans ce deuxième cas, après avoir identifié le token la lecture du dernier caractère est annulée, il servira comme premier caractère du token suivant.
 
-\section{Grammaire LL(1)}
+\section{Grammaire $LL_1$}
 
 \newcounter{cnt}
 \setcounter{cnt}{1}
@@ -513,19 +513,41 @@
 \end{longtable}                 
 \end{landscape}
 
+\section{Modifications}
 
-remarques : 
-1) on a enlevé la possibilité d'omettre les () autour des listes d'arguments a
-l'appel d'une fonction, c'est pas LL(1) car le follow de expression prend le
-follow de toutes les expressions
+	Nous sommes partis de la grammaire originale de l'énoncé et l'avons
+	modifiée au fur et à mesure pour la rendre $LL_1$ (après les transformations
+	automatiques habituelles).
 
-2) On a supprimé le ``not'', car sa priorité faible engendre un comportement
-non-LL(1), le follow de expression prend le follow de toutes les expressions
-
-3) La grammaire autorise l'assignation de n'importe quelle expression a une
-autre, c'est lors de l'analyse semantique qu'on determine ce qui est lvalue
+	\subsection{Appels de fonctions}
+		Toutes les fonctions (y compris les fonctions prédéfinies) doivent être
+		appelés en précédant leur nom par un ``&''. De plus, nous avons enlevé la
+		possibilité d'omettre les parenthèses autour des listes	d'arguments lors de
+		l'appel d'une fonction. En effet ceci ne permettait pas d'obtenir une
+		grammaire $LL_1$, car un appel de fonction est une expression du plus bas
+		niveau, mais le dernier argument est une expression du niveau le plus haut, et
+		comme le dernier argument d'une fonction est potentiellement la derniere
+		variable/le dernier token dans cette fonction (quand il n'y a pas de
+		parenthèses pour entourer la liste d'arguments), l'expression de plus haut
+		niveau ``hérite'' du follow de celle de plus bas niveau, ce qui crée des
+		conflits.
+	
+	\subsection{Not}
+		Le symbole ``not'' en toutes lettres tel que décrit dans la syntaxe génère le
+		même genre de conflits. Ce symbole ``transforme'' ce qui se trouve derriere en
+		une expression de plus haut niveau (et ce afin de respecter sa priorité
+		faible). Mais ceci place une expression de haut niveau a la fin d'une
+		expression de bas niveau, et on obtient des conflits. Nous avons tout
+		simplement supprimé ce symbole.
+		
+	\subsection{Assignement} 
+		La grammaire autorise l'assignation de n'importe quelle
+		expression à n'importe quelle autre, c'est lors de l'analyse sémantique
+		que la validité de ce genre d'expressions est déterminée.
 
 4) On ne respecte pas les specificités du genre ``0 but true''
+
+\section{Programme}
 
 \end{document}
 
