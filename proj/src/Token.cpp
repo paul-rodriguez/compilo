@@ -119,10 +119,6 @@ ostream& operator<<(ostream& out, const Token& t)
 	{
 		out << "NOT";
 	}
-	else if (t.id() == Token::NOTLETTERS)
-	{
-		out << "NOTLETTERS";
-	}
 	else if (t.id() == Token::LAZY_AND)
 	{
 		out << "LAZY_AND";
@@ -214,30 +210,6 @@ ostream& operator<<(ostream& out, const Token& t)
 	else if (t.id() == Token::RETURN)
 	{
 		out << "RETURN";
-	}
-	else if (t.id() == Token::DEFINED)
-	{
-		out << "DEFINED";
-	}
-	else if (t.id() == Token::INT)
-	{
-		out << "INT";
-	}
-	else if (t.id() == Token::LENGTH)
-	{
-		out << "LENGTH";
-	}
-	else if (t.id() == Token::PRINT)
-	{
-		out << "PRINT";
-	}
-	else if (t.id() == Token::SCALAR)
-	{
-		out << "SCALAR";
-	}
-	else if (t.id() == Token::SUBSTR)
-	{
-		out << "SUBSTR";
 	}
 	return out;
 }
