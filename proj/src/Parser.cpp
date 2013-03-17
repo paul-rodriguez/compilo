@@ -381,6 +381,7 @@ void Parser::expression_six_v()
 	if(isToken(TokenSet::f_expression_six_v))
 	{
 		match();
+
 		expression_seven();
 		if (oldTok().id() == Token::PLUS)
 		{

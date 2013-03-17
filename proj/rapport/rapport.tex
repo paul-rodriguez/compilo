@@ -547,8 +547,8 @@
 		
 	\subsection{Divers}
 		\begin{itemize}
-		\item On ne respecte pas les specificités de perl du genre ``0 but true'' qui est
-		évalué à zéro comme entier mais à vrai comme booléen.
+		\item On ne respecte pas les specificités de Perl comme par exemple ``0 but
+		true'' qui est évalué à zéro comme entier mais à vrai comme booléen.
 		\item La fonction scalar ne fait rien dans le cadre de ce projet, car nous
 		n'avons pas de tableaux.
 		\end{itemize}
@@ -566,6 +566,8 @@
 	conditions (si un code perl avec des if/elsif/else est lu en input, le comportement du programme est imprévisible).
 	
 	Le compilateur a été écrit en C++. Pour le lancer, il suffit de lui donner en
-	argument le nom d'un fichier contenant du code perl simplifié.
+	argument le nom d'un fichier contenant du code perl simplifié. L'output se
+	fera dans le fichier ``code.s''.
+	Nous avons rédigé un makefile très simple pour le compiler.
 	
 \end{document}
