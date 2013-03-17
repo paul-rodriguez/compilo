@@ -19,6 +19,8 @@ public:
 	unsigned argIndex(const std::string&) const;
 	void addArg(const std::string&);
 	std::ostringstream& afterReturn();
+	std::ostringstream& end();
+	std::ostringstream& header();
 
 protected:
 	std::vector<std::string>& args();
@@ -29,6 +31,7 @@ private:
 	std::ostringstream code_;
 	std::vector<std::string> args_;
 	std::ostringstream afterReturn_;
+	std::ostringstream header_;
 };
 
 #endif /* FUNCTION_HPP_ */

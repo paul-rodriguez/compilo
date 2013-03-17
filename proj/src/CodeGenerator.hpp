@@ -28,7 +28,6 @@ public:
 	void unary_plus();
 	void unary_minus();
 	void Not();
-	void assign_mark();
 	void different();
 	void eq();
 	void equals();

@@ -139,11 +139,6 @@ void CodeGenerator::Not()
 	;
 }
 
-void CodeGenerator::assign_mark()
-{
-
-}
-
 void CodeGenerator::different()
 {
 	Operator(DIFFERENT);
@@ -388,7 +383,8 @@ std::string CodeGenerator::nextLabel()
 void CodeGenerator::functionCall(const std::string& name)
 {
 	argumentIndex_ = 0;
-	currentCode()<<"bl "<<name<<"(PLT)"<<std::endl;
+	currentCode()<<"bl "<<name<<"(PLT)"<<std::endl
+		<<"str r0, [sp, #-4]!"<<std::endl;
 }
 
 void CodeGenerator::functionCallArgument() //put what is on top of the stack in the next argument slot
