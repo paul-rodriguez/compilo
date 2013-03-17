@@ -19,6 +19,7 @@ public:
 	void functionArg(const std::string&);
 	void endFunction();
 	void functionCall(const std::string&);
+	void functionCallArgument();
 	void var(const std::string&);
 	void integer(const std::string& value);
 	void Float(const std::string& value);
@@ -44,10 +45,9 @@ public:
 	void lower_equals();
 	void le();
 	void lt();
-	void text();
-	void rodata();
 	void data();
 	Code& code() const;
+	void pop();
 	static int structSize;
 
 protected:
@@ -75,6 +75,7 @@ private:
 	Code& code_;
 	Function* fctDef_;
 	unsigned label_;
+	unsigned argumentIndex_;
 };
 
 #endif /* CODEGENERATOR_HPP_ */

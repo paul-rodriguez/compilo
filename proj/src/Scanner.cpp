@@ -642,7 +642,8 @@ void Scanner::identifier_substr()
 		nextCharacter();
 		if (character == 'r')
 		{
-			commonTokenEnd(Token::SUBSTR);
+			commonTokenEnd(Token::IDENTIFIER);
+			token.setValue("substr");
 		}
 	}
 }
@@ -665,7 +666,8 @@ void Scanner::identifier_int()
 	nextCharacter();
 	if (character == 't')
 	{
-		commonTokenEnd(Token::INT);
+		commonTokenEnd(Token::IDENTIFIER);
+		token.setValue("int");
 	}
 }
 
@@ -739,7 +741,8 @@ void Scanner::defined_identifier()
 						nextCharacter();
 						if (character == 'd')
 						{
-							commonTokenEnd(Token::DEFINED);
+							commonTokenEnd(Token::IDENTIFIER);
+							token.setValue("defined");
 						}
 					}
 				}
@@ -762,7 +765,8 @@ void Scanner::identifier_print()
 				nextCharacter();
 				if (character == 't')
 				{
-					commonTokenEnd(Token::PRINT);
+					commonTokenEnd(Token::IDENTIFIER);
+					token.setValue("print");
 				}
 			}
 		}

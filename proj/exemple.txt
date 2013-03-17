@@ -1,10 +1,4 @@
-sub foo($ag,$a)
-{
-	$a = 'hahaha';
-	return 3 + 2 + $ag;
-}
-
-$glob;
+&print(3);
 
 
 

@@ -8,7 +8,8 @@ int CodeGenerator::structSize = 12;
 CodeGenerator::CodeGenerator(const std::string& filename):
 	code_(*(new Code(filename))),
 	fctDef_(NULL),
-	label_(0)
+	label_(0),
+	argumentIndex_(0)
 {
 	;
 }
@@ -44,7 +45,8 @@ void CodeGenerator::var(const std::string& name)
 	{
 		std::ostringstream& o = fct().code();
 		unsigned index = fct().argIndex(name);
-		if(index < fct().argSize()) //this is a function argument
+		unsigned argNum = fct().argSize();
+		if(index < argNum) //this is a function argument
 		{
 			if(index < 4)
 			{
@@ -52,7 +54,7 @@ void CodeGenerator::var(const std::string& name)
 			}
 			else
 			{
-				o<<"ldr r4, [fp, #"<<(4*(index-3))<<"]"<<std::endl;
+				o<<"ldr r4, [fp, #"<<(4*(argNum-index+1))<<"]"<<std::endl;
 			}
 		}
 		else //this is not a function argument
@@ -61,7 +63,8 @@ void CodeGenerator::var(const std::string& name)
 			{
 				addGlobal(name);
 			}
-			o<<"ldr r4, .globals+"<<code().globalOffset(name)<<std::endl;
+			o<<"ldr r4, =.globals"<<std::endl
+			<<"ldr r4, [r4, #"<<code().globalOffset(name)<<"]"<<std::endl;
 		}
 		o<<"str r4, [sp, #-4]!"<<std::endl; //push the variable on the stack
 	}
@@ -71,7 +74,8 @@ void CodeGenerator::var(const std::string& name)
 		{
 			addGlobal(name);
 		}
-		currentCode()<<"ldr r4, .globals+"<<code().globalOffset(name)<<std::endl
+		currentCode()<<"ldr r4, =.globals"<<std::endl
+			<<"ldr r4, [r4, #"<<code().globalOffset(name)<<"]"<<std::endl
 			<<"str r4, [sp, #-4]!"<<std::endl; //push the variable on the stack
 	}
 }
@@ -91,12 +95,11 @@ void CodeGenerator::pushStackScalar(const std::string& value, unsigned type)
 	calloc();
 	float f = (float) atof(value.c_str());
 	int* p = (int*) (&f);
-	rodata();
-	std::string roScalarLabel = nextLabel();
-	currentCode()<<roScalarLabel<<":"<<std::endl
-			<<".word "<<*p<<std::endl;
-	text();
-	currentCode()<<"mov r5, "<<roScalarLabel<<std::endl
+	std::ostringstream o;
+	o<<".word "<<(*p);
+	std::string roScalarLabel = code().addRodata(o.str());
+	currentCode()<<"ldr r5, ="<<roScalarLabel<<std::endl
+		<<"ldr r5, [r5]"<<std::endl
 		<<"str r5, [r9]"<<std::endl
 		<<"mov r5, #"<<type<<std::endl;
 	pushStack();
@@ -106,11 +109,7 @@ void CodeGenerator::string(const std::string& value)
 {
 	calloc();
 	currentCode()<<"mov r8, r9"<<std::endl;
-	rodata();
-	std::string roStringLabel = nextLabel();
-	currentCode()<<roStringLabel<<":"<<std::endl
-			<<".asciz \""<<value<<"\""<<std::endl;
-	text();
+	std::string roStringLabel = code().addRodata(".asciz \""+value+"\"");
 	calloc(value.length()+1);
 	strCpy("r9",roStringLabel);
 	currentCode()<<"mov r5, r9"<<std::endl
@@ -325,32 +324,21 @@ void CodeGenerator::concat_mark()
 void CodeGenerator::startOperator()
 {
 	currentCode()<<"ldr r4, [sp]"<<std::endl
-		<<"add sp, sp, 4"<<std::endl
+		<<"add sp, sp, #4"<<std::endl
 		<<"ldr r5, [r4, #8]"<<std::endl
 		<<"ldr r6, [sp]"<<std::endl
-		<<"add sp, sp, 4"<<std::endl
+		<<"add sp, sp, #4"<<std::endl
 		<<"ldr r7, [r6, #8]"<<std::endl;
 }
 
-void CodeGenerator::strCpy(const std::string& destination, const std::string& source)
+void CodeGenerator::strCpy(const std::string& destination, const std::string& source) //source DOIT etre un label
 {
 	currentCode()<<"stmfd sp!, {r0, r1}"<<std::endl
 			<<"mov r0, "<<destination<<std::endl
-			<<"mov r1, "<<source<<std::endl
+			<<"ldr r1, ="<<source<<std::endl
+			<<"ldr r1, [r1]"<<std::endl
 			<<"bl strcpy(PLT)"<<std::endl
 			<<"ldmfd sp!, {r0, r1}"<<std::endl;
-}
-
-void CodeGenerator::rodata()
-{
-	currentCode()<<".section .rodata"<<std::endl
-			<<".align"<<std::endl;
-}
-
-void CodeGenerator::text()
-{
-	currentCode()<<".text"<<std::endl
-			<<".align"<<std::endl;
 }
 
 void CodeGenerator::calloc() //allocates a struct, address is put in r9
@@ -379,17 +367,33 @@ void CodeGenerator::endFunction()
 	unsetFctDef();
 }
 
+void CodeGenerator::pop()
+{
+	currentCode()<<"add sp, sp, #4"<<std::endl;
+}
+
 std::string CodeGenerator::nextLabel()
 {
 	std::ostringstream res;
 	++label_;
-	res<<".L"<<label_;
+	res<<".POTATO"<<label_;
 	return res.str();
 }
 
 void CodeGenerator::functionCall(const std::string& name)
 {
-	//TODO
+	argumentIndex_ = 0;
+	currentCode()<<"bl "<<name<<"(PLT)"<<std::endl;
+}
+
+void CodeGenerator::functionCallArgument() //put what is on top of the stack in the next argument slot
+{
+	if(argumentIndex_ < 4)
+	{
+		currentCode()<<"ldr r"<<argumentIndex_<<", [sp]"<<std::endl
+			<<"add sp, sp, #4"<<std::endl;
+	}
+	argumentIndex_++;
 }
 
 bool CodeGenerator::isGlobal(const std::string& name) const

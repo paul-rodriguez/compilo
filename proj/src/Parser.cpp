@@ -194,6 +194,7 @@ void Parser::expression()
 {
 	expression_two();
 	expression_v();
+	//cg().pop(); //A ENLEVER !
 }
 
 void Parser::expression_v()
@@ -446,10 +447,11 @@ void Parser::function_call()
 {
 	match(Token::CALL_MARK);
 	match(Token::IDENTIFIER);
-	cg().functionCall(oldTokValue());
+	std::string fctName = oldTokValue();
 	match(Token::LPAR);
 	argument_call_list();
 	match(Token::RPAR);
+	cg().functionCall(fctName);
 }
 
 void Parser::argument_call_list()
@@ -457,6 +459,7 @@ void Parser::argument_call_list()
 	if (isToken(TokenSet::f_expression))
 	{
 		expression();
+		cg().functionCallArgument();
 		argument_call_list_v();
 	}
 }
@@ -467,6 +470,7 @@ void Parser::argument_call_list_v()
 	{
 		match();
 		expression();
+		cg().functionCallArgument();
 		argument_call_list_v();
 	}
 }
