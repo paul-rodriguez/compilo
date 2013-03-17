@@ -3,12 +3,13 @@
 #include "Function.hpp"
 #include <stdlib.h>
 
-int structSize = 12;
+int CodeGenerator::structSize = 12;
 
 CodeGenerator::CodeGenerator(const std::string& filename):
 	code_(*(new Code(filename))),
 	fctDef_(NULL),
-	label_(0)
+	label_(0),
+	argumentIndex_(0)
 {
 	;
 }
@@ -36,12 +37,7 @@ void CodeGenerator::function(const std::string& name)
 void CodeGenerator::functionArg(const std::string& name) //arguments above 3 can be loaded from address [fp, #(4*argIndex)] when they are used
 {
 	fct().addArg(name);
-	//TODO LocalVariable class
 }
-
-// !!!!! mettre les variables sur le stack comme une machine en polonaise inversée !!!!!
-// !!!!! c'est le seul moyen de pouvoir resoudre des trucs comme 5 + 4 * 7 + 3 +...
-// !!!!! operateur = pop les deux premiers elements du stack, appliquer l'operation, push le resultat
 
 void CodeGenerator::var(const std::string& name)
 {
@@ -49,7 +45,8 @@ void CodeGenerator::var(const std::string& name)
 	{
 		std::ostringstream& o = fct().code();
 		unsigned index = fct().argIndex(name);
-		if(index < fct().argSize()) //this is a function argument
+		unsigned argNum = fct().argSize();
+		if(index < argNum) //this is a function argument
 		{
 			if(index < 4)
 			{
@@ -57,7 +54,7 @@ void CodeGenerator::var(const std::string& name)
 			}
 			else
 			{
-				o<<"ldr r4, [fp, #"<<(4*(index-3))<<"]"<<std::endl;
+				o<<"ldr r4, [fp, #"<<(4*(argNum-index+1))<<"]"<<std::endl;
 			}
 		}
 		else //this is not a function argument
@@ -66,7 +63,8 @@ void CodeGenerator::var(const std::string& name)
 			{
 				addGlobal(name);
 			}
-			o<<"ldr r4, .globals+"<<code().globalOffset(name)<<std::endl;
+			o<<"ldr r4, =.globals"<<std::endl
+			<<"ldr r4, [r4, #"<<code().globalOffset(name)<<"]"<<std::endl;
 		}
 		o<<"str r4, [sp, #-4]!"<<std::endl; //push the variable on the stack
 	}
@@ -76,7 +74,8 @@ void CodeGenerator::var(const std::string& name)
 		{
 			addGlobal(name);
 		}
-		currentCode()<<"ldr r4, .globals+"<<code().globalOffset(name)<<std::endl
+		currentCode()<<"ldr r4, =.globals"<<std::endl
+			<<"ldr r4, [r4, #"<<code().globalOffset(name)<<"]"<<std::endl
 			<<"str r4, [sp, #-4]!"<<std::endl; //push the variable on the stack
 	}
 }
@@ -96,7 +95,11 @@ void CodeGenerator::pushStackScalar(const std::string& value, unsigned type)
 	calloc();
 	float f = (float) atof(value.c_str());
 	int* p = (int*) (&f);
-	currentCode()<<"mov r5, "<<*p<<std::endl
+	std::ostringstream o;
+	o<<".word "<<(*p);
+	std::string roScalarLabel = code().addRodata(o.str());
+	currentCode()<<"ldr r5, ="<<roScalarLabel<<std::endl
+		<<"ldr r5, [r5]"<<std::endl
 		<<"str r5, [r9]"<<std::endl
 		<<"mov r5, #"<<type<<std::endl;
 	pushStack();
@@ -105,10 +108,20 @@ void CodeGenerator::pushStackScalar(const std::string& value, unsigned type)
 void CodeGenerator::string(const std::string& value)
 {
 	calloc();
-	currentCode()<<"mov r5, "<<<<std::endl
-		<<"str r5, [r9, #4]"<<std::endl // faire qqch!
-		<<"mov r5, #1"<<std::endl;
+	currentCode()<<"mov r8, r9"<<std::endl;
+	std::string roStringLabel = code().addRodata(".asciz \""+value+"\"");
+	calloc(value.length()+1);
+	strCpy("r9",roStringLabel);
+	currentCode()<<"mov r5, r9"<<std::endl
+		<<"str r5, [r8, #4]"<<std::endl
+		<<"mov r5, #1"<<std::endl
+		<<"mov r9, r8"<<std::endl;
 	pushStack();
+}
+
+void CodeGenerator::assign_mark()
+{
+	//TODO
 }
 
 void CodeGenerator::unary_plus()
@@ -133,22 +146,22 @@ void CodeGenerator::assign_mark()
 
 void CodeGenerator::different()
 {
-	Operator(Type::DIFFERENT);
+	Operator(DIFFERENT);
 }
 
 void CodeGenerator::equals()
 {
-	Operator(Type::EQUALS);
+	Operator(EQUALS);
 }
 
 void CodeGenerator::eq()
 {
-	Operator(Type::EQ);
+	Operator(EQ);
 }
 
 void CodeGenerator::ne()
 {
-	Operator(Type::NE);
+	Operator(NE);
 }
 
 void CodeGenerator::lazy_or()
@@ -163,12 +176,12 @@ void CodeGenerator::lazy_and()
 
 void CodeGenerator::greater()
 {
-	Operator(Type::GREATER);
+	Operator(GREATER);
 }
 
 void CodeGenerator::greater_equals()
 {
-	Operator(Type::GREATER_EQUALS);
+	Operator(GREATER_EQUALS);
 }
 
 void CodeGenerator::ge()
@@ -183,12 +196,12 @@ void CodeGenerator::gt()
 
 void CodeGenerator::lower()
 {
-	Operator(Type::LOWER);
+	Operator(LOWER);
 }
 
 void CodeGenerator::lower_equals()
 {
-	Operator(Type::LOWER_EQUALS);
+	Operator(LOWER_EQUALS);
 }
 
 void CodeGenerator::le()
@@ -251,22 +264,22 @@ void CodeGenerator::Operator(Type type)
 		<<fourthLabel<<":"<<std::endl;
 
 	int i;
-	if (type == Type::PLUS)
+	if (type == PLUS)
 	{
 		currentCode()<<"add r5, r5, r7"<<std::endl;
 		i = 2;
 	}
-	else if (type == Type::MINUS)
+	else if (type == MINUS)
 	{
 		currentCode()<<"sub r5, r7, r5"<<std::endl;
 		i = 2;
 	}
-	else if (type == Type::TIMES)
+	else if (type == TIMES)
 	{
 		currentCode()<<"mult"<<std::endl;
 		i = 2;
 	}
-	else if (type == Type::DIVIDE)
+	else if (type == DIVIDE)
 	{
 		currentCode()<<"div"<<std::endl;
 		i = 2;
@@ -274,7 +287,7 @@ void CodeGenerator::Operator(Type type)
 	else
 	{
 		std::string fifthLabel = nextLabel(), sixthLabel = nextLabel();
-		if (type == Type::GREATER || type == Type::GREATER_EQUALS)
+		if (type == GREATER || type == GREATER_EQUALS)
 		{
 			currentCode()<<"cmp r7, r5"<<std::endl;
 		}
@@ -282,17 +295,17 @@ void CodeGenerator::Operator(Type type)
 		{
 			currentCode()<<"cmp r5, r7"<<std::endl;
 		}
-		if (type == Type::GREATER || type == Type::LOWER)
+		if (type == GREATER || type == LOWER)
 		{
 			currentCode()<<"bgt "<<fifthLabel<<std::endl
-				<<
+				<<"placeholder";//TODO
 		}
 		else
 		{
 			currentCode()<<"bge "<<fifthLabel<<std::endl
-				<<
+					<<"placeholder";//TODO
 		}
-		currentCode()<<std::endl
+		currentCode()<<std::endl;
 
 		i = 1;
 	}
@@ -316,22 +329,36 @@ void CodeGenerator::concat_mark()
 void CodeGenerator::startOperator()
 {
 	currentCode()<<"ldr r4, [sp]"<<std::endl
-		<<"add sp, sp, 4"<<std::endl
+		<<"add sp, sp, #4"<<std::endl
 		<<"ldr r5, [r4, #8]"<<std::endl
 		<<"ldr r6, [sp]"<<std::endl
-		<<"add sp, sp, 4"<<std::endl
+		<<"add sp, sp, #4"<<std::endl
 		<<"ldr r7, [r6, #8]"<<std::endl;
 }
 
-void CodeGenerator::calloc()
+void CodeGenerator::strCpy(const std::string& destination, const std::string& source) //source DOIT etre un label
 {
-	currentCode()<<"str r0, [sp, #-4]!"<<std::endl
+	currentCode()<<"stmfd sp!, {r0, r1}"<<std::endl
+			<<"mov r0, "<<destination<<std::endl
+			<<"ldr r1, ="<<source<<std::endl
+			<<"ldr r1, [r1]"<<std::endl
+			<<"bl strcpy(PLT)"<<std::endl
+			<<"ldmfd sp!, {r0, r1}"<<std::endl;
+}
+
+void CodeGenerator::calloc() //allocates a struct, address is put in r9
+{
+	calloc(structSize);
+}
+
+void CodeGenerator::calloc(unsigned size) //allocates size bytes, address is put in r9
+{
+	currentCode()<<"stmfd sp!, {r0, r1}"<<std::endl
 		<<"mov r0, #1"<<std::endl
-		<<"mov r1, #"<<structSize<<std::endl
+		<<"mov r1, #"<<size<<std::endl
 		<<"bl calloc(PLT)"<<std::endl
 		<<"mov r9, r0"<<std::endl
-		<<"ldr r0, [sp]"<<std::endl
-		<<"add sp, sp, 4"<<std::endl;
+		<<"ldmfd sp!, {r0, r1}"<<std::endl;
 }
 
 void CodeGenerator::pushStack()
@@ -345,17 +372,33 @@ void CodeGenerator::endFunction()
 	unsetFctDef();
 }
 
+void CodeGenerator::pop()
+{
+	currentCode()<<"add sp, sp, #4"<<std::endl;
+}
+
 std::string CodeGenerator::nextLabel()
 {
 	std::ostringstream res;
 	++label_;
-	res<<".L"<<label_;
+	res<<".POTATO"<<label_;
 	return res.str();
 }
 
 void CodeGenerator::functionCall(const std::string& name)
 {
-	//TODO
+	argumentIndex_ = 0;
+	currentCode()<<"bl "<<name<<"(PLT)"<<std::endl;
+}
+
+void CodeGenerator::functionCallArgument() //put what is on top of the stack in the next argument slot
+{
+	if(argumentIndex_ < 4)
+	{
+		currentCode()<<"ldr r"<<argumentIndex_<<", [sp]"<<std::endl
+			<<"add sp, sp, #4"<<std::endl;
+	}
+	argumentIndex_++;
 }
 
 bool CodeGenerator::isGlobal(const std::string& name) const

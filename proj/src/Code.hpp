@@ -20,6 +20,7 @@ public:
 
 	bool isGlobal(const std::string&) const;
 	void addGlobal(const std::string&);
+	std::string addRodata(const std::string&);
 	void addFunction(Function&);
 	unsigned globalOffset(const std::string&) const;
 	void writeMain();
@@ -29,7 +30,9 @@ protected:
 	std::ofstream& file();
 	const std::string& filename();
 
+	void predefinedFunctions();
 	void programHeader();
+	void writeRodata();
 	void endProgram();
 	void function(Function&);
 
@@ -37,6 +40,7 @@ protected:
 	const std::list<std::string>& globals() const;
 	std::map<std::string,Function*>& fctMap();
 	Function& fct(const std::string&);
+	std::list<std::string>& rodata();
 
 private:
 	std::ofstream file_;
@@ -46,6 +50,7 @@ private:
 	std::list<std::string> globals_;
 	std::map<std::string,Function*> fctMap_;
 	Function main_;
+	std::list<std::string> rodata_;
 };
 
 #endif /* CODE_HPP_ */

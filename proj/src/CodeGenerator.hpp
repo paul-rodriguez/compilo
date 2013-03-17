@@ -19,10 +19,12 @@ public:
 	void functionArg(const std::string&);
 	void endFunction();
 	void functionCall(const std::string&);
+	void functionCallArgument();
 	void var(const std::string&);
 	void integer(const std::string& value);
 	void Float(const std::string& value);
 	void string(const std::string& value);
+	void assign_mark();
 	void unary_plus();
 	void unary_minus();
 	void Not();
@@ -44,10 +46,9 @@ public:
 	void lower_equals();
 	void le();
 	void lt();
-	void text();
-	void rodata();
 	void data();
 	Code& code() const;
+	void pop();
 	static int structSize;
 
 protected:
@@ -62,6 +63,8 @@ protected:
 	void addGlobal(const std::string&);
 	void Operator(Type);
 	void calloc();
+	void calloc(unsigned size);
+	void strCpy(const std::string& destination, const std::string& source);
 	void pushStack();
 	void pushStackScalar(const std::string&, unsigned);
 	void startOperator();
@@ -73,6 +76,7 @@ private:
 	Code& code_;
 	Function* fctDef_;
 	unsigned label_;
+	unsigned argumentIndex_;
 };
 
 #endif /* CODEGENERATOR_HPP_ */

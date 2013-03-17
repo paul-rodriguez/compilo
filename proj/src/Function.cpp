@@ -41,3 +41,9 @@ const std::string& Function::name() const { return name_; }
 unsigned Function::argSize() const { return args().size(); }
 std::vector<std::string>& Function::args() { return args_; }
 const std::vector<std::string>& Function::args() const { return args_; }
+
+std::ostringstream& Function::afterReturn()
+{
+	return afterReturn_;
+}
+
