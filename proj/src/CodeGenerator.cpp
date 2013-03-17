@@ -142,11 +142,6 @@ void CodeGenerator::Not()
 	;
 }
 
-void CodeGenerator::assign_mark()
-{
-
-}
-
 void CodeGenerator::different()
 {
 	Operator(DIFFERENT);
@@ -346,7 +341,6 @@ void CodeGenerator::strCpy(const std::string& destination, const std::string& so
 	currentCode()<<"stmfd sp!, {r0, r1}"<<std::endl
 			<<"mov r0, "<<destination<<std::endl
 			<<"ldr r1, ="<<source<<std::endl
-			<<"ldr r1, [r1]"<<std::endl
 			<<"bl strcpy(PLT)"<<std::endl
 			<<"ldmfd sp!, {r0, r1}"<<std::endl;
 }
@@ -424,7 +418,8 @@ std::string CodeGenerator::nextLabel()
 void CodeGenerator::functionCall(const std::string& name)
 {
 	argumentIndex_ = 0;
-	currentCode()<<"bl "<<name<<"(PLT)"<<std::endl;
+	currentCode()<<"bl "<<name<<"(PLT)"<<std::endl
+		<<"str r0, [sp, #-4]!"<<std::endl;
 }
 
 void CodeGenerator::functionCallArgument() //put what is on top of the stack in the next argument slot

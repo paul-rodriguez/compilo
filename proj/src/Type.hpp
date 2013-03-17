@@ -1,7 +1,7 @@
 #ifndef TYPE_HPP_
 #define TYPE_HPP_
 
-enum Type
+typedef enum Type
 {
 	PLUS,
 	MINUS,
@@ -15,7 +15,7 @@ enum Type
 	EQUALS,
 	EQ,
 	NE
-};
+} Type;
 
 
 #endif /* TYPE_HPP_ */

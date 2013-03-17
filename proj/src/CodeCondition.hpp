@@ -22,7 +22,7 @@ public:
 
 	std::ostringstream& code();
 
-	const std::string& write() const;
+	std::string write() const;
 
 private:
 	std::list<std::ostringstream*> cond_;

@@ -47,3 +47,8 @@ std::ostringstream& Function::afterReturn()
 	return afterReturn_;
 }
 
+std::ostringstream& Function::header()
+{
+	return header_;
+}
+
