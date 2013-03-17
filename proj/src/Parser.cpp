@@ -9,7 +9,8 @@ Parser::Parser(Scanner& scanner, CodeGenerator& cg):
 	scanner_(scanner),
 	cg_(cg),
 	tok_(NULL),
-	oldTok_(NULL)
+	oldTok_(NULL),
+	ignore_(false)
 {
 	;
 }
@@ -128,6 +129,7 @@ void Parser::instruction()
 	{
 		condition();
 		expression();
+		cg().beginIfBlock();
 		match(Token::LBRACE);
 		instruction_list();
 		match(Token::RBRACE);
@@ -149,8 +151,10 @@ void Parser::instruction_f()
 {
 	if(isToken(TokenSet::f_condition))
 	{
+		setIgnore(true);
 		condition();
 		expression();
+		setIgnore(false);
 	}
 }
 
@@ -159,10 +163,12 @@ void Parser::condition()
 	if(isToken(Token::IF))
 	{
 		match();
+		cg().beginIf();
 	}
 	else if(isToken(Token::UNLESS))
 	{
 		match();
+		cg().beginUnless();
 	}
 	else
 	{
@@ -194,7 +200,6 @@ void Parser::expression()
 {
 	expression_two();
 	expression_v();
-	//cg().pop(); //A ENLEVER !
 }
 
 void Parser::expression_v()
@@ -204,7 +209,10 @@ void Parser::expression_v()
 		match();
 		expression_two();
 		expression_v();
-		cg().assign_mark();
+		if(!ignore_)
+		{
+			cg().assign_mark();
+		}
 	}
 }
 
@@ -220,7 +228,10 @@ void Parser::expression_two_v()
 	{
 		match();
 		expression_three();
-		cg().lazy_or();
+		if(!ignore_)
+		{
+			cg().lazy_or();
+		}
 		expression_two_v();
 	}
 }
@@ -237,7 +248,10 @@ void Parser::expression_three_v()
 	{
 		match();
 		expression_four();
-		cg().lazy_and();
+		if(!ignore_)
+		{
+			cg().lazy_and();
+		}
 		expression_three_v();
 	}
 }
@@ -256,19 +270,31 @@ void Parser::expression_four_v()
 		expression_five();
 		if (oldTok().id() == Token::DIFFERENT)
 		{
-			cg().different();
+			if(!ignore_)
+			{
+				cg().different();
+			}
 		}
 		else if (oldTok().id() == Token::EQ)
 		{
-			cg().eq();
+			if(!ignore_)
+			{
+				cg().eq();
+			}
 		}
 		else if (oldTok().id() == Token::EQUALS)
 		{
-			cg().equals();
+			if(!ignore_)
+			{
+				cg().equals();
+			}
 		}
 		else
 		{
-			cg().ne();
+			if(!ignore_)
+			{
+				cg().ne();
+			}
 		}
 	}
 }
@@ -287,35 +313,59 @@ void Parser::expression_five_v()
 		expression_six();
 		if (oldTok().id() == Token::GREATER)
 		{
-			cg().greater();
+			if(!ignore_)
+			{
+				cg().greater();
+			}
 		}
 		else if (oldTok().id() == Token::GREATER_EQUALS)
 		{
-			cg().greater_equals();
+			if(!ignore_)
+			{
+				cg().greater_equals();
+			}
 		}
 		else if (oldTok().id() == Token::GE)
 		{
-			cg().ge();
+			if(!ignore_)
+			{
+				cg().ge();
+			}
 		}
 		else if (oldTok().id() == Token::GT)
 		{
-			cg().gt();
+			if(!ignore_)
+			{
+				cg().gt();
+			}
 		}
 		else if (oldTok().id() == Token::LOWER)
 		{
-			cg().lower();
+			if(!ignore_)
+			{
+				cg().lower();
+			}
 		}
 		else if (oldTok().id() == Token::LOWER_EQUALS)
 		{
-			cg().lower_equals();
+			if(!ignore_)
+			{
+				cg().lower_equals();
+			}
 		}
 		else if (oldTok().id() == Token::LT)
 		{
-			cg().lt();
+			if(!ignore_)
+			{
+				cg().lt();
+			}
 		}
 		else
 		{
-			cg().le();
+			if(!ignore_)
+			{
+				cg().le();
+			}
 		}
 	}
 }
@@ -334,15 +384,24 @@ void Parser::expression_six_v()
 		expression_seven();
 		if (oldTok().id() == Token::PLUS)
 		{
-			cg().plus();
+			if(!ignore_)
+			{
+				cg().plus();
+			}
 		}
 		else if (oldTok().id() == Token::MINUS)
 		{
-			cg().minus();
+			if(!ignore_)
+			{
+				cg().minus();
+			}
 		}
 		else
 		{
-			cg().concat_mark();
+			if(!ignore_)
+			{
+				cg().concat_mark();
+			}
 		}
 		expression_six_v();
 	}
@@ -372,15 +431,24 @@ void Parser::expression_eight()
 		expression_eight();
 		if (oldTok().id() == Token::PLUS)
 		{
-			cg().unary_plus();
+			if(!ignore_)
+			{
+				cg().unary_plus();
+			}
 		}
 		else if (oldTok().id() == Token::MINUS)
 		{
-			cg().unary_minus();
+			if(!ignore_)
+			{
+				cg().unary_minus();
+			}
 		}
 		else
 		{
-			cg().Not();
+			if(!ignore_)
+			{
+				cg().Not();
+			}
 		}
 	}
 	else if(isToken(TokenSet::f_expression_nine))
@@ -420,22 +488,34 @@ void Parser::simple_expression()
 	else if (isToken(Token::INTEGER))
 	{
 		match(Token::INTEGER);
-		cg().integer(oldTokValue());
+		if(!ignore_)
+		{
+			cg().integer(oldTokValue());
+		}
 	}
 	else if (isToken(Token::FLOAT))
 	{
 		match(Token::FLOAT);
-		cg().Float(oldTokValue());
+		if(!ignore_)
+		{
+			cg().Float(oldTokValue());
+		}
 	}
 	else if (isToken(Token::STRING))
 	{
 		match(Token::STRING);
-		cg().string(oldTokValue());
+		if(!ignore_)
+		{
+			cg().string(oldTokValue());
+		}
 	}
 	else if (isToken(Token::VAR))
 	{
 		match(Token::VAR);
-		cg().var(oldTokValue());
+		if(!ignore_)
+		{
+			cg().var(oldTokValue());
+		}
 	}
 	else
 	{
@@ -451,7 +531,10 @@ void Parser::function_call()
 	match(Token::LPAR);
 	argument_call_list();
 	match(Token::RPAR);
-	cg().functionCall(fctName);
+	if(!ignore_)
+	{
+		cg().functionCall(fctName);
+	}
 }
 
 void Parser::argument_call_list()
@@ -459,7 +542,10 @@ void Parser::argument_call_list()
 	if (isToken(TokenSet::f_expression))
 	{
 		expression();
-		cg().functionCallArgument();
+		if(!ignore_)
+		{
+			cg().functionCallArgument();
+		}
 		argument_call_list_v();
 	}
 }
@@ -470,7 +556,10 @@ void Parser::argument_call_list_v()
 	{
 		match();
 		expression();
-		cg().functionCallArgument();
+		if(!ignore_)
+		{
+			cg().functionCallArgument();
+		}
 		argument_call_list_v();
 	}
 }
@@ -553,10 +642,16 @@ void Parser::nextToken()
 }
 
 
+CodeGenerator& Parser::cg() const
+{
+	return cg_;
+}
+
+
 const Token& Parser::oldTok() const { return *oldTok_; }
 void Parser::setOldTok(const Token& oldTok) { oldTok_ = &oldTok; }
 const std::string& Parser::oldTokValue() const { return oldTok().value(); }
 Scanner& Parser::scanner() const { return scanner_; }
-CodeGenerator& Parser::cg() const { return cg_; }
 const Token& Parser::tok() const { return *tok_; }
 void Parser::setTok(const Token& tok) { tok_ = &tok; }
+void Parser::setIgnore(bool b) { ignore_ = b; }

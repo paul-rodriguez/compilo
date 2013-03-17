@@ -2,10 +2,12 @@
 #define CODEGENERATOR_HPP_
 
 #include <string>
+#include <stack>
 #include "Type.hpp"
 
 class Function;
 class Code;
+class CodeCondition;
 
 class CodeGenerator
 {
@@ -48,6 +50,12 @@ public:
 	void data();
 	Code& code() const;
 	void pop();
+
+	void beginIf();
+	void beginUnless();
+	void beginIfBlock();
+	void endCond();
+
 	static int structSize;
 
 protected:
@@ -76,6 +84,9 @@ private:
 	Function* fctDef_;
 	unsigned label_;
 	unsigned argumentIndex_;
+	std::stack<CodeCondition*> cond_;
+	unsigned condIndex_;
+	std::ostringstream* condCode_;
 };
 
 #endif /* CODEGENERATOR_HPP_ */
