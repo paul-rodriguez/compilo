@@ -496,7 +496,14 @@
 \hline	\varname{PROGRAM\_V} 			&2	&2	& 	& 	&	&2	& 	&2		&2		&2		&2	\\
 \hline	\varname{PROGRAM\_F}            &5 	&5 	& 	& 	&	&5 	& 	&5 		&5 		&5 		&5 	\\
 \hline	\varname{FUNCTION} 				& 	& 	& 	& 	&	& 	& 	& 		& 		& 		& 	\\
-\hline	\varname{FUNCTION\_ARGUMENT} 	& 	& 	& 	& 	&	& 	& 	& 		& 		& 		& 	\\\hline	\varname{ARGUMENT\_LIST} 		& 	& 	& 	& 	&	& 	& 	& 		& 		& 		&9 	\\\hline	\varname{ARGUMENT\_LIST\_V} 	& 	& 	& 	& 	&	& 	& 	& 		& 		& 		&	\\\hline	\varname{INSTRUCTION\_LIST} 	&13	&13	& 	& 	&	&13	& 	&13		&13		&13		&13	\\\hline	\varname{INSTRUCTION} 			&15	&15	& 	& 	&	&15	& 	&15		&15		&15		&15	\\\hline	\varname{INSTRUCTION\_F} 		&	&	& 	& 	&	&	& 	&		&		&		&	\\\hline	\varname{CONDITION} 			&	&	& 	& 	&	&	& 	&		&		&		&	\\\hline	\varname{CONDITION\_END} 		&25	&25	& 	& 	&	&25	& 	&25		&25		&25		&25	\\
+\hline	\varname{FUNCTION\_ARGUMENT} 	& 	& 	& 	& 	&	& 	& 	& 		& 		& 		& 	\\
+\hline	\varname{ARGUMENT\_LIST} 		& 	& 	& 	& 	&	& 	& 	& 		& 		& 		&9 	\\
+\hline	\varname{ARGUMENT\_LIST\_V} 	& 	& 	& 	& 	&	& 	& 	& 		& 		& 		&	\\
+\hline	\varname{INSTRUCTION\_LIST} 	&13	&13	& 	& 	&	&13	& 	&13		&13		&13		&13	\\
+\hline	\varname{INSTRUCTION} 			&15	&15	& 	& 	&	&15	& 	&15		&15		&15		&15	\\
+\hline	\varname{INSTRUCTION\_F} 		&	&	& 	& 	&	&	& 	&		&		&		&	\\
+\hline	\varname{CONDITION} 			&	&	& 	& 	&	&	& 	&		&		&		&	\\
+\hline	\varname{CONDITION\_END} 		&25	&25	& 	& 	&	&25	& 	&25		&25		&25		&25	\\
 \hline	\varname{SIMPLE\_EXPRESSION} 	&	&	&	&	&	&	& 	&72		&73		&74		&75	\\
 \hline	\varname{FUNCTION\_CALL} 		&	&	&	&	&	&	& 	&		&		&		&	\\
 \hline	\varname{ARGUMENT\_CALL\_LIST} 	&77 &77	& 	& 	&	&77	& 	&77		&77		&77		&77	\\
@@ -508,7 +515,28 @@
 
 \begin{landscape}
 \begin{longtable}{|c|c|c|c|c|c|c|c|c|c|c|c|}				
-\hline									&+ 	&- 	&. 	&* 	&/ 	&! 	&id &integer&float	&string	&var\\\hline	\varname{EXPRESSION} 			&26	&26	& 	& 	&	&26	& 	&26		&26		&26		&26	\\\hline	\varname{EXPRESSION\_V} 		&	&	& 	& 	&	&	& 	&		&		&		&	\\\hline	\varname{EXPRESSION\_TWO} 		&29	&29	& 	& 	&	&29	& 	&29		&29		&29		&29	\\\hline	\varname{EXPRESSION\_TWO\_V} 	&	&	& 	& 	&	&	& 	&		&		&		&	\\\hline	\varname{EXPRESSION\_THREE} 	&32	&32	& 	& 	&	&32	& 	&32		&32		&32		&32	\\\hline	\varname{EXPRESSION\_THREE\_V} 	&	&	& 	& 	&	&	& 	&		&		&		&	\\\hline	\varname{EXPRESSION\_FOUR} 		&35	&35	& 	& 	&	&35	& 	&35		&35		&35		&35	\\\hline	\varname{EXPRESSION\_FOUR\_V} 	&	&	& 	& 	&	&	& 	&		&		&		&	\\\hline	\varname{EXPRESSION\_FOUR\_F} 	&	&	& 	& 	&	&	& 	&		&		&		&	\\\hline	\varname{EXPRESSION\_FIVE} 		&42	&42	& 	& 	&	&42	& 	&42		&42		&42		&42	\\\hline	\varname{EXPRESSION\_FIVE\_V} 	&	&	& 	& 	&	&	& 	&		&		&		&	\\\hline	\varname{EXPRESSION\_FIVE\_F} 	&	&	& 	& 	&	&	& 	&		&		&		&	\\\hline	\varname{EXPRESSION\_SIX} 		&53	&53	& 	& 	&	&53	& 	&53		&53		&53		&53	\\\hline	\varname{EXPRESSION\_SIX\_V} 	&54	&54	&54	& 	&	&	& 	&		&		&		&	\\\hline	\varname{EXPRESSION\_SIX\_F} 	&56	&57	&58	& 	&	&	& 	&		&		&		&	\\\hline	\varname{EXPRESSION\_SEVEN} 	&59	&59	& 	& 	&	&59	& 	&59		&59		&59		&59	\\\hline	\varname{EXPRESSION\_SEVEN\_V} 	&61	&61	&61	&60	&60	&	& 	&		&		&		&	\\\hline	\varname{EXPRESSION\_SEVEN\_F} 	&	&	&	&62	&63	&	& 	&		&		&		&	\\\hline	\varname{EXPRESSION\_EIGHT} 	&65	&65	&	&	&	&65	& 	&64		&64		&64		&64	\\\hline	\varname{EXPRESSION\_EIGHT\_F} 	&68	&67	&	&	&	&66	& 	&		&		&		&	\\\hline	\varname{EXPRESSION\_NINE} 		&	&	&	&	&	&	& 	&70		&70		&70		&70	\\
+\hline									&+ 	&- 	&. 	&* 	&/ 	&! 	&id &integer&float	&string	&var\\
+\hline	\varname{EXPRESSION} 			&26	&26	& 	& 	&	&26	& 	&26		&26		&26		&26	\\
+\hline	\varname{EXPRESSION\_V} 		&	&	& 	& 	&	&	& 	&		&		&		&	\\
+\hline	\varname{EXPRESSION\_TWO} 		&29	&29	& 	& 	&	&29	& 	&29		&29		&29		&29	\\
+\hline	\varname{EXPRESSION\_TWO\_V} 	&	&	& 	& 	&	&	& 	&		&		&		&	\\
+\hline	\varname{EXPRESSION\_THREE} 	&32	&32	& 	& 	&	&32	& 	&32		&32		&32		&32	\\
+\hline	\varname{EXPRESSION\_THREE\_V} 	&	&	& 	& 	&	&	& 	&		&		&		&	\\
+\hline	\varname{EXPRESSION\_FOUR} 		&35	&35	& 	& 	&	&35	& 	&35		&35		&35		&35	\\
+\hline	\varname{EXPRESSION\_FOUR\_V} 	&	&	& 	& 	&	&	& 	&		&		&		&	\\
+\hline	\varname{EXPRESSION\_FOUR\_F} 	&	&	& 	& 	&	&	& 	&		&		&		&	\\
+\hline	\varname{EXPRESSION\_FIVE} 		&42	&42	& 	& 	&	&42	& 	&42		&42		&42		&42	\\
+\hline	\varname{EXPRESSION\_FIVE\_V} 	&	&	& 	& 	&	&	& 	&		&		&		&	\\
+\hline	\varname{EXPRESSION\_FIVE\_F} 	&	&	& 	& 	&	&	& 	&		&		&		&	\\
+\hline	\varname{EXPRESSION\_SIX} 		&53	&53	& 	& 	&	&53	& 	&53		&53		&53		&53	\\
+\hline	\varname{EXPRESSION\_SIX\_V} 	&54	&54	&54	& 	&	&	& 	&		&		&		&	\\
+\hline	\varname{EXPRESSION\_SIX\_F} 	&56	&57	&58	& 	&	&	& 	&		&		&		&	\\
+\hline	\varname{EXPRESSION\_SEVEN} 	&59	&59	& 	& 	&	&59	& 	&59		&59		&59		&59	\\
+\hline	\varname{EXPRESSION\_SEVEN\_V} 	&61	&61	&61	&60	&60	&	& 	&		&		&		&	\\
+\hline	\varname{EXPRESSION\_SEVEN\_F} 	&	&	&	&62	&63	&	& 	&		&		&		&	\\
+\hline	\varname{EXPRESSION\_EIGHT} 	&65	&65	&	&	&	&65	& 	&64		&64		&64		&64	\\
+\hline	\varname{EXPRESSION\_EIGHT\_F} 	&68	&67	&	&	&	&66	& 	&		&		&		&	\\
+\hline	\varname{EXPRESSION\_NINE} 		&	&	&	&	&	&	& 	&70		&70		&70		&70	\\
 \hline
 \end{longtable}                 
 \end{landscape}
@@ -553,18 +581,23 @@
 		n'avons pas de tableaux.
 		\end{itemize}
 
-\section{Programme et Mode d'emploi}
-
+\section{Programme et Fonctionnalités}
 	Nous n'avons pas pu finir le compilateur. Les analyses lexicale et syntaxique
 	fonctionnent correctement et selon les modifications décrites dans la section
 	précédente, mais la génération du code n'est pas finie. Le compilateur est
 	capable de générer du code ARMV5TE correct pour les définitions et appels de
-	fonctions avec un nombre quelconque de paramètres, les litéraux (réels, entiers
+	fonctions avec un nombre quelconque de paramètres (et aussi des appels de fonctions dans le code d'autre fonctions), les litéraux (réels, entiers
 	et chaines de caractères), certains opérateurs, les variables globales. Les
 	fonctions print et length on été implémentées (nous avons le code assembleur
 	des autres mais l'intégrer dans le compilateur n'est pas rapide), mais pas les
-	conditions (si un code perl avec des if/elsif/else est lu en input, le comportement du programme est imprévisible).
+	conditions (si un code perl avec des if/elsif/else est lu en input, le comportement du programme est 			imprévisible).
 	
+	Il est important de remarquer que le typage dynamique fonctionne. Toutes nos valeurs en Perl sont des pointeurs vers des triplets avec un type, une valeur en virgule flottante (servant aussi a la représentation d'entiers) et une chaine de caractères. Nous avons inféré une bonne partie de la syntaxe de l'assembleur ARM à partir des résultats de compilations de programmes C simples, mais nous avons été limités sur certains aspects (comme l'usage de la GOT pour utiliser des litéraux). Un typecheck systématique est rajouté lorsque nécessaire, par exemple dans la fonction print avant d'appeler le code C. En l'état, les programmes générés par le compilateur sont remplis de fuites de mémoire, car toutes les variables sont déclarées dynamiquement et que nous n'avons pas eu le temps de trouver tous les endroits où une désallocation est possible.
+	
+	Nous utilisons la pile pour stocker les valeurs intermédiaires lors de l'évaluation d'une expression. Par exemple, si on veut évaluer "3 + 4;", d'abord on push une variable initialisée à 3, puis une autre à 4, puis l'opérateur + retire les deux dernières variables de la pile et les additionne (après un typecheck) et push son résultat (remarquez que du coup nous pouvons avoir un opérateur + associatif à gauche sans que la grammaire aie une récursivité à gauche). Tous les opérateurs et fonctions passent leur résultats de cette façon. De même, nous avions prévu que un "if" fasse des tests sur la dernière case de la pile, celle-ci contenant le résultat de l'expression contenue dans la condition du "if".
+	
+	
+\section{Mode d'emploi}
 	Le compilateur a été écrit en C++. Pour le lancer, il suffit de lui donner en
 	argument le nom d'un fichier contenant du code perl simplifié. L'output se
 	fera dans le fichier ``code.s''.
